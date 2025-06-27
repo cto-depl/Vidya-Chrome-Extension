@@ -472,6 +472,33 @@
                 gap: 0.5rem;
             }
         }
+        /* Logo image styling */
+.logo-img {
+    height: 60px; /* Optimal size for navbar */
+    width: auto; /* Maintain aspect ratio */
+    margin-right: 10px;
+    vertical-align: middle; /* Align properly with text */
+}
+
+/* Ensure logo container doesn't stretch */
+.logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+.logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav {
+    min-height: 60px; /* Fixed minimum height */
+    padding: 0.5rem 0; /* Reduced vertical padding */
+    align-items: center; /* Ensure vertical centering */
+}
     </style>
 </head>
 <body>
@@ -482,7 +509,7 @@
                 <i class="fas fa-arrow-left"></i>
                 Back to Home
             </a>
-            <a href="./index.html" class="logo">Vidya AI</a>
+            <div class="logo"><img src="./icons/Vidya4.png" class="logo-img"><img src="./icons/Vidya5.png" class="logo-img"></div>
             
         </nav>
     </header>
@@ -789,9 +816,9 @@
             </div>
             <div>
                 <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
+                    <a href="./privacy.html">Privacy Policy</a>
                     <a href="./terms.html">Terms</a>
-                    <a href="#">Contact</a>
+                    <a href="./contact.html">Contact</a>
                 </div>
                 <div class="social-icons" style="margin-top: 1rem;">
                     <a href="#" class="social-icon">

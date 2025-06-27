@@ -6,6 +6,7 @@
     <title>Contact Us - Vidya AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         * {
             margin: 0;
@@ -481,6 +482,45 @@
                 padding: 1.5rem;
             }
         }
+        .logo-img {
+    height: 60px; /* Optimal size for navbar */
+    width: auto; /* Maintain aspect ratio */
+    margin-right: 10px;
+    vertical-align: middle; /* Align properly with text */
+}
+
+/* Ensure logo container doesn't stretch */
+.logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+.logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav {
+    min-height: 60px; /* Fixed minimum height */
+    padding: 0.5rem 0; /* Reduced vertical padding */
+    align-items: center; /* Ensure vertical centering */
+}
+.back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-link:hover {
+            color: var(--accent-purple);
+        }
     </style>
 </head>
 <body>
@@ -491,7 +531,7 @@
                 <i class="fas fa-arrow-left"></i>
                 Back to Home
             </a>
-            <a href="./index.html" class="logo">Vidya AI</a>
+            <div class="logo"><img src="./icons/Vidya4.png" class="logo-img"><img src="./icons/Vidya5.png" class="logo-img"></div>
             
         </nav>
     </header>
@@ -671,9 +711,9 @@
                 </div>
                 <div>
                     <div class="footer-links">
-                        <a href="/privacy">Privacy Policy</a>
-                        <a href="/terms">Terms</a>
-                        <a href="/contact">Contact</a>
+                        <a href="/privacy.html">Privacy Policy</a>
+                        <a href="/terms.html">Terms</a>
+                        <a href="/contact.html">Contact</a>
                     </div>
                     <div class="social-icons" style="margin-top: 1rem;">
                         <a href="#" class="social-icon">
