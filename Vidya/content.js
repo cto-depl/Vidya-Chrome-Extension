@@ -16,6 +16,12 @@ let isFirstRun = true;
 const REGISTRATION_CHECK_INTERVAL = 5000; // 1 second
 const MAX_REGISTRATION_CHECKS = 5;
 let isVoiceInputActive = false;
+let pinnedOptions = [];
+let lastEvent = null;
+let lastSelection = null;
+const PINNED_OPTIONS_KEY = 'pinnedOptions';
+
+
 
 let quizState = {
   questions: [],
@@ -522,6 +528,13 @@ document.addEventListener('mouseup', (e) => {
   const selection = window.getSelection();
   const selectedText = selection.toString().trim();
   if (selectedText.length > 0 && !toolti) {
+    const result =  new Promise(resolve => 
+      chrome.storage.local.get([PINNED_OPTIONS_KEY], resolve)
+    );
+    pinnedOptions = result[PINNED_OPTIONS_KEY] || [];
+    
+    lastEvent = e;
+    lastSelection = selectedText;
     const isInsideChat = chatContainer && chatContainer.contains(e.target);
     if (!isInsideChat) {
       showtoolti(e, selectedText);
@@ -530,7 +543,7 @@ document.addEventListener('mouseup', (e) => {
 });
 
 chrome.storage.local.get(['userProfile'], (result) => {
-  userProfile = result.userProfile || { supportNeeded: true, language: 'English', autoNavigate: true }; // Add default fields
+  userProfile = result.userProfile || { supportNeeded: true, language: 'English', autoNavigate: false }; // Add default fields
 
 });
 document.addEventListener('mousedown', (e) => {
@@ -569,7 +582,7 @@ function createFloatingIcon() {
     // Load saved position and chat state
     chrome.storage.local.get(['iconPosition'], (result) => {
       const pos = {
-        x: window.innerWidth - 35,
+        x: window.innerWidth - 45,
         y: window.innerHeight / 2,
         side: 'right' // Force right side
       };
@@ -605,7 +618,7 @@ function createFloatingIcon() {
       let y = e.clientY - offsetY;
 
       // Constrain to viewport
-      x = Math.max(0, Math.min(x-35, window.innerWidth - floatingIcon.offsetWidth-35));
+      x = Math.max(0, Math.min(x-45, window.innerWidth - floatingIcon.offsetWidth-45));
       y = Math.max(0, Math.min(y, window.innerHeight - floatingIcon.offsetHeight));
 
       floatingIcon.style.left = `${x}px`;
@@ -625,7 +638,7 @@ function createFloatingIcon() {
 
       // Snap to nearest edge with some margin
       const margin = 10;
-      const newX = window.innerWidth - 35;
+      const newX = window.innerWidth - 45;
 
 
       floatingIcon.style.left = `${newX}px`;
@@ -1104,7 +1117,7 @@ function switchMode(mode, contentDiv, headerTitle) {
   if (mode === 'clear-chat') {
     contentDiv.innerHTML = `
       <div class="clear-chat-confirm" style="padding: 15px; text-align: center;">
-        <p style="margin-bottom: 20px;">Are you sure you want to clear all chat and support conversations?</p>
+        <p style="margin-bottom: 20px;font-size:15px !important;">Are you sure you want to clear all chat and support conversations?</p>
         <button class="confirm-clear-btn" style="background: #f44336; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">Confirm</button>
         <button class="cancel-clear-btn" style="background: #e0e0e0; color: #54656f; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
       </div>
@@ -1291,10 +1304,47 @@ function switchMode(mode, contentDiv, headerTitle) {
             </div>
             
             <button class="generate-btntn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="margin-right: 8px;">
-                <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
-              </svg>
+              
               Generate Quiz
+
+            
+              <svg width="18px" height="18px" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
+              
+              <path d="M121.59 60.83l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.16-.59-.55-1.38-1.75-1.38c-1.01 0-1.59.79-1.75 1.38l-6.13 29.87c-2.46 9.06-7.67 16.27-16.58 19.21l-13.93 4.49c-1.97.64-2 3.42-.04 4.09l14.03 4.83c8.88 2.95 14.06 10.15 16.52 19.17l6.14 29.53c.16.59.49 1.65 1.75 1.65c1.33 0 1.59-1.06 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c1.94-.68 1.91-3.46-.06-4.1z" fill="#fdd835">
+              
+              </path>
+              
+              <path d="M122.91 62.08c-.22-.55-.65-1.03-1.32-1.25l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.09-.34-.41-.96-.78-1.14l1.98 29.97c1.47 13.68 2.73 20.12 13.65 22c9.38 1.62 20.23 3.48 23.11 3.98z" fill="#ffee58">
+              
+              </path>
+              
+              <path d="M122.94 63.64l-24.16 5.54c-8.51 2.16-13.2 7.09-13.2 19.99l-2.37 30.94c.81-.08 1.47-.52 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c.66-.24 1.08-.73 1.29-1.29z" fill="#f4b400">
+              
+              </path>
+              
+              <g>
+              
+              <path d="M41.81 86.81c-8.33-2.75-9.09-5.85-10.49-11.08l-3.49-12.24c-.21-.79-2.27-.79-2.49 0L22.97 74.8c-1.41 5.21-4.41 9.35-9.53 11.04l-8.16 3.54c-1.13.37-1.15 1.97-.02 2.35l8.22 2.91c5.1 1.69 8.08 5.83 9.5 11.02l2.37 10.82c.22.79 2.27.79 2.48 0l2.78-10.77c1.41-5.22 3.57-9.37 10.5-11.07l7.72-2.91c1.13-.39 1.12-1.99-.02-2.36l-7-2.56z" fill="#fdd835">
+              
+              </path>
+              
+              <path d="M28.49 75.55c.85 7.86 1.28 10.04 7.65 11.67l13.27 2.59c-.14-.19-.34-.35-.61-.43l-7-2.57c-7.31-2.5-9.33-5.68-10.7-12.04c-1.37-6.36-2.83-10.51-2.83-10.51c-.51-1.37-1.24-1.3-1.24-1.3l1.46 12.59z" fill="#ffee58">
+              
+              </path>
+              
+              <path d="M28.73 102.99c0-7.41 4.05-11.08 10.49-11.08l10.02-.41s-.58.77-1.59 1.01l-6.54 2.13c-5.55 2.23-8.08 3.35-9.8 10.94c0 0-2.22 8.83-2.64 9.76c-.58 1.3-1.27 1.57-1.27 1.57l1.33-13.92z" fill="#f4b400">
+              
+              </path>
+              
+              </g>
+              
+              <path d="M59.74 28.14c.56-.19.54-.99-.03-1.15l-7.72-2.08a4.77 4.77 0 0 1-3.34-3.3L45.61 9.06c-.15-.61-1.02-.61-1.17.01l-2.86 12.5a4.734 4.734 0 0 1-3.4 3.37l-7.67 1.99c-.57.15-.61.95-.05 1.15l8.09 2.8c1.45.5 2.57 1.68 3.01 3.15l2.89 11.59c.15.6 1.01.61 1.16 0l2.99-11.63a4.773 4.773 0 0 1 3.04-3.13l8.1-2.72z" fill="#f4b400" stroke="#f4b400" stroke-miterlimit="10">
+              
+              </path>
+              
+              </svg>
+
+
             </button>
             </div>
             <div class="quizz-previ"></div>
@@ -1335,7 +1385,9 @@ function switchMode(mode, contentDiv, headerTitle) {
             ">
             <h3>Hi,</h3>
               <p style="margin: 0 0 10px; font-size: 16px; "><strong> How can I assist you?</strong></p>
-              <p style="margin: 0; font-size: 16px; color: #666;">I'm vidy, your AI assistant. Ask me anything or select text on the page to get started!</p>
+              <p style="margin: 0; font-size: 16px; color: #666;">I’m Vidya — your AI Learning Companion!
+              Ask me anything related to education or knowledge or Just select any text on the page to get started.
+              For seamless navigation, make sure auto-assist is enabled in your preferences.</p>
             </div>
           ` : ''}
         </div>
@@ -1542,18 +1594,60 @@ function switchMode(mode, contentDiv, headerTitle) {
     case 'writingng':
       contentDiv.innerHTML = `
         <div class="writingng-formrm" style="padding: 15px;">
-          <h3>Writing Assistant</h3>
-          <select class="writingng-type">
-            <option value="letter">Letter</option>
-            <option value="email">Email</option>
-            <option value="essay">Essay</option>
-          </select>
+          <h3 style="font-size:20px !important;">Writing Assistant</h3>
+          <div class="writing-type-container">
+  <button class="writing-type-badge selected" data-value="letter">Letter</button>
+  <button class="writing-type-badge" data-value="email">Email</button>
+  <button class="writing-type-badge" data-value="essay">Essay</button>
+</div>
+
           <input type="text" class="writingng-topic" placeholder="Enter topic or prompt...">
           <input type="text" class="writingng-recipient" placeholder="Recipient (optional)">
-          <button class="generate-btntn">Generate</button>
+          <button class="generate-btntn">Generate <svg width="18px" height="18px" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
+              
+          <path d="M121.59 60.83l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.16-.59-.55-1.38-1.75-1.38c-1.01 0-1.59.79-1.75 1.38l-6.13 29.87c-2.46 9.06-7.67 16.27-16.58 19.21l-13.93 4.49c-1.97.64-2 3.42-.04 4.09l14.03 4.83c8.88 2.95 14.06 10.15 16.52 19.17l6.14 29.53c.16.59.49 1.65 1.75 1.65c1.33 0 1.59-1.06 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c1.94-.68 1.91-3.46-.06-4.1z" fill="#fdd835">
+          
+          </path>
+          
+          <path d="M122.91 62.08c-.22-.55-.65-1.03-1.32-1.25l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.09-.34-.41-.96-.78-1.14l1.98 29.97c1.47 13.68 2.73 20.12 13.65 22c9.38 1.62 20.23 3.48 23.11 3.98z" fill="#ffee58">
+          
+          </path>
+          
+          <path d="M122.94 63.64l-24.16 5.54c-8.51 2.16-13.2 7.09-13.2 19.99l-2.37 30.94c.81-.08 1.47-.52 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c.66-.24 1.08-.73 1.29-1.29z" fill="#f4b400">
+          
+          </path>
+          
+          <g>
+          
+          <path d="M41.81 86.81c-8.33-2.75-9.09-5.85-10.49-11.08l-3.49-12.24c-.21-.79-2.27-.79-2.49 0L22.97 74.8c-1.41 5.21-4.41 9.35-9.53 11.04l-8.16 3.54c-1.13.37-1.15 1.97-.02 2.35l8.22 2.91c5.1 1.69 8.08 5.83 9.5 11.02l2.37 10.82c.22.79 2.27.79 2.48 0l2.78-10.77c1.41-5.22 3.57-9.37 10.5-11.07l7.72-2.91c1.13-.39 1.12-1.99-.02-2.36l-7-2.56z" fill="#fdd835">
+          
+          </path>
+          
+          <path d="M28.49 75.55c.85 7.86 1.28 10.04 7.65 11.67l13.27 2.59c-.14-.19-.34-.35-.61-.43l-7-2.57c-7.31-2.5-9.33-5.68-10.7-12.04c-1.37-6.36-2.83-10.51-2.83-10.51c-.51-1.37-1.24-1.3-1.24-1.3l1.46 12.59z" fill="#ffee58">
+          
+          </path>
+          
+          <path d="M28.73 102.99c0-7.41 4.05-11.08 10.49-11.08l10.02-.41s-.58.77-1.59 1.01l-6.54 2.13c-5.55 2.23-8.08 3.35-9.8 10.94c0 0-2.22 8.83-2.64 9.76c-.58 1.3-1.27 1.57-1.27 1.57l1.33-13.92z" fill="#f4b400">
+          
+          </path>
+          
+          </g>
+          
+          <path d="M59.74 28.14c.56-.19.54-.99-.03-1.15l-7.72-2.08a4.77 4.77 0 0 1-3.34-3.3L45.61 9.06c-.15-.61-1.02-.61-1.17.01l-2.86 12.5a4.734 4.734 0 0 1-3.4 3.37l-7.67 1.99c-.57.15-.61.95-.05 1.15l8.09 2.8c1.45.5 2.57 1.68 3.01 3.15l2.89 11.59c.15.6 1.01.61 1.16 0l2.99-11.63a4.773 4.773 0 0 1 3.04-3.13l8.1-2.72z" fill="#f4b400" stroke="#f4b400" stroke-miterlimit="10">
+          
+          </path>
+          
+          </svg></button>
         </div>
         <div class='writingng-preview response-ccontainer' style='flex-grow: 1; padding: 10px; background: #f9f9f9;'></div>
       `;
+      document.querySelectorAll('.writing-type-badge').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.writing-type-badge').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+      
       const writingngTopic = contentDiv.querySelector('.writingng-topic');
       if (window.getSelection().toString().trim()) writingngTopic.value = window.getSelection().toString().trim();
       contentDiv.querySelector('.generate-btntn').addEventListener('click', () => generatewritingng(contentDiv));
@@ -1564,18 +1658,54 @@ function switchMode(mode, contentDiv, headerTitle) {
         const savedSettings = result.settings || { class: '' };
         contentDiv.innerHTML = `
           <div class="lessonon-formrm" style="padding: 15px;">
-            <h3>Lesson Plan Generator</h3>
+            <h3 style="font-size:20px !important;">Lesson Plan Generator</h3>
             <input type="text" id="subject" placeholder="Enter subject (e.g., Math)">
             <input type="text" id="class" placeholder="Enter your class" value="${savedSettings.class || ''}">
             <input type="text" id="duration" placeholder="Enter duration (e.g., 1 hour)">
             <input type="text" id="additional-info" placeholder="Enter any additional info(optional)">
-            <button class="generate-btntn">Generate lessonon Plan</button>
+            <button class="generate-btntn">Generate Lesson Plan  <svg width="18px" height="18px" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
+              
+            <path d="M121.59 60.83l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.16-.59-.55-1.38-1.75-1.38c-1.01 0-1.59.79-1.75 1.38l-6.13 29.87c-2.46 9.06-7.67 16.27-16.58 19.21l-13.93 4.49c-1.97.64-2 3.42-.04 4.09l14.03 4.83c8.88 2.95 14.06 10.15 16.52 19.17l6.14 29.53c.16.59.49 1.65 1.75 1.65c1.33 0 1.59-1.06 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c1.94-.68 1.91-3.46-.06-4.1z" fill="#fdd835">
+            
+            </path>
+            
+            <path d="M122.91 62.08c-.22-.55-.65-1.03-1.32-1.25l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.09-.34-.41-.96-.78-1.14l1.98 29.97c1.47 13.68 2.73 20.12 13.65 22c9.38 1.62 20.23 3.48 23.11 3.98z" fill="#ffee58">
+            
+            </path>
+            
+            <path d="M122.94 63.64l-24.16 5.54c-8.51 2.16-13.2 7.09-13.2 19.99l-2.37 30.94c.81-.08 1.47-.52 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c.66-.24 1.08-.73 1.29-1.29z" fill="#f4b400">
+            
+            </path>
+            
+            <g>
+            
+            <path d="M41.81 86.81c-8.33-2.75-9.09-5.85-10.49-11.08l-3.49-12.24c-.21-.79-2.27-.79-2.49 0L22.97 74.8c-1.41 5.21-4.41 9.35-9.53 11.04l-8.16 3.54c-1.13.37-1.15 1.97-.02 2.35l8.22 2.91c5.1 1.69 8.08 5.83 9.5 11.02l2.37 10.82c.22.79 2.27.79 2.48 0l2.78-10.77c1.41-5.22 3.57-9.37 10.5-11.07l7.72-2.91c1.13-.39 1.12-1.99-.02-2.36l-7-2.56z" fill="#fdd835">
+            
+            </path>
+            
+            <path d="M28.49 75.55c.85 7.86 1.28 10.04 7.65 11.67l13.27 2.59c-.14-.19-.34-.35-.61-.43l-7-2.57c-7.31-2.5-9.33-5.68-10.7-12.04c-1.37-6.36-2.83-10.51-2.83-10.51c-.51-1.37-1.24-1.3-1.24-1.3l1.46 12.59z" fill="#ffee58">
+            
+            </path>
+            
+            <path d="M28.73 102.99c0-7.41 4.05-11.08 10.49-11.08l10.02-.41s-.58.77-1.59 1.01l-6.54 2.13c-5.55 2.23-8.08 3.35-9.8 10.94c0 0-2.22 8.83-2.64 9.76c-.58 1.3-1.27 1.57-1.27 1.57l1.33-13.92z" fill="#f4b400">
+            
+            </path>
+            
+            </g>
+            
+            <path d="M59.74 28.14c.56-.19.54-.99-.03-1.15l-7.72-2.08a4.77 4.77 0 0 1-3.34-3.3L45.61 9.06c-.15-.61-1.02-.61-1.17.01l-2.86 12.5a4.734 4.734 0 0 1-3.4 3.37l-7.67 1.99c-.57.15-.61.95-.05 1.15l8.09 2.8c1.45.5 2.57 1.68 3.01 3.15l2.89 11.59c.15.6 1.01.61 1.16 0l2.99-11.63a4.773 4.773 0 0 1 3.04-3.13l8.1-2.72z" fill="#f4b400" stroke="#f4b400" stroke-miterlimit="10">
+            
+            </path>
+            
+            </svg></button>
           </div>
           <div class="lessonon-preview"></div>
         `;
         const generateBtn = contentDiv.querySelector('.generate-btntn');
         const previewDiv = contentDiv.querySelector('.lessonon-preview');
-
+        const writingngTopic = contentDiv.querySelector('.writingng-topic');
+        if (window.getSelection().toString().trim()) writingngTopic.value = window.getSelection().toString().trim();
+        contentDiv.querySelector('.generate-btntn').addEventListener('click', () => generatewritingng(contentDiv));
         generateBtn.addEventListener('click', async () => {
           const subject = contentDiv.querySelector('#subject').value.trim();
           const classLevel = contentDiv.querySelector('#class').value.trim();
@@ -1587,18 +1717,18 @@ function switchMode(mode, contentDiv, headerTitle) {
             return;
           }
 
-          previewDiv.innerHTML = '<p class="loadi">Generating lessonon plan...</p>';
+          previewDiv.innerHTML = '<p class="loadi">Generating lesson plan...</p>';
 
           try {
             const prompt = `
-              Create a detailed lessonon plan for:
+              Create a detailed Lesson plan for:
               - Subject: ${subject}
               - Class: ${classLevel}
               - Duration: ${duration}
               - Additional Information: ${additionalInfo || 'None'}
               
               Format the response with plain text:
-              - Use "Heading:" for section headers (e.g., "lessonon Objectives:", "Activities:")
+              - Use "Heading:" for section headers (e.g., "Lesson Objectives:", "Activities:")
               - Do NOT use Markdown symbols like **, #, or |.
               - Use bullet points (-) for objectives and activities
               - For the timeline, use a plain text table format:
@@ -1606,6 +1736,8 @@ function switchMode(mode, contentDiv, headerTitle) {
                   0-10 min   Quiz               Quiz Sheets
               - Preserve new lines for readability
               - Use clear, concise language
+
+              Present the information in a clear, point-wise format. Avoid using tables or tabular structure in the response
             `;
             const response = await fetch('https://ai.learneng.app/LearnEng/generate', {
               method: 'POST',
@@ -1617,9 +1749,7 @@ function switchMode(mode, contentDiv, headerTitle) {
               throw new Error(`API request failed: ${response.status}`);
             }
             const data = await response.json();
-            let formattedResponse = data.response
-              .replace(/(\w+\s*\w*:\s*)/g, '<strong>$1</strong>')
-              .replace(/\n/g, '<br>');
+            let formattedResponse = formatResponse(data.response);
             previewDiv.innerHTML = `<div class="response-ccontent">${formattedResponse}</div>`;
           } catch (error) {
             previewDiv.innerHTML = `<p class="erro">Error: ${error.message}</p>`;
@@ -1633,12 +1763,46 @@ function switchMode(mode, contentDiv, headerTitle) {
         const savedSettings = result.settings || { class: '' };
         contentDiv.innerHTML = `
           <div class="studydy-formrm" style="padding: 15px;">
-            <h3>Study Plan Generator</h3>
+            <h3 style="font-size:20px !important;">Study Plan Generator</h3>
             <input type="text" id="subject" placeholder="Enter subject (e.g., Math)">
             <input type="text" id="class" placeholder="Enter your class" value="${savedSettings.class || ''}">
             <input type="text" id="duration" placeholder="Enter duration (e.g., 2 weeks)">
             <input type="text" id="additional-info" placeholder="Enter any additional info(optional)">
-            <button class="generate-btntn">Generate Study Plan</button>
+            <button class="generate-btntn">Generate Study Plan  <svg width="18px" height="18px" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
+              
+            <path d="M121.59 60.83l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.16-.59-.55-1.38-1.75-1.38c-1.01 0-1.59.79-1.75 1.38l-6.13 29.87c-2.46 9.06-7.67 16.27-16.58 19.21l-13.93 4.49c-1.97.64-2 3.42-.04 4.09l14.03 4.83c8.88 2.95 14.06 10.15 16.52 19.17l6.14 29.53c.16.59.49 1.65 1.75 1.65c1.33 0 1.59-1.06 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c1.94-.68 1.91-3.46-.06-4.1z" fill="#fdd835">
+            
+            </path>
+            
+            <path d="M122.91 62.08c-.22-.55-.65-1.03-1.32-1.25l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.09-.34-.41-.96-.78-1.14l1.98 29.97c1.47 13.68 2.73 20.12 13.65 22c9.38 1.62 20.23 3.48 23.11 3.98z" fill="#ffee58">
+            
+            </path>
+            
+            <path d="M122.94 63.64l-24.16 5.54c-8.51 2.16-13.2 7.09-13.2 19.99l-2.37 30.94c.81-.08 1.47-.52 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c.66-.24 1.08-.73 1.29-1.29z" fill="#f4b400">
+            
+            </path>
+            
+            <g>
+            
+            <path d="M41.81 86.81c-8.33-2.75-9.09-5.85-10.49-11.08l-3.49-12.24c-.21-.79-2.27-.79-2.49 0L22.97 74.8c-1.41 5.21-4.41 9.35-9.53 11.04l-8.16 3.54c-1.13.37-1.15 1.97-.02 2.35l8.22 2.91c5.1 1.69 8.08 5.83 9.5 11.02l2.37 10.82c.22.79 2.27.79 2.48 0l2.78-10.77c1.41-5.22 3.57-9.37 10.5-11.07l7.72-2.91c1.13-.39 1.12-1.99-.02-2.36l-7-2.56z" fill="#fdd835">
+            
+            </path>
+            
+            <path d="M28.49 75.55c.85 7.86 1.28 10.04 7.65 11.67l13.27 2.59c-.14-.19-.34-.35-.61-.43l-7-2.57c-7.31-2.5-9.33-5.68-10.7-12.04c-1.37-6.36-2.83-10.51-2.83-10.51c-.51-1.37-1.24-1.3-1.24-1.3l1.46 12.59z" fill="#ffee58">
+            
+            </path>
+            
+            <path d="M28.73 102.99c0-7.41 4.05-11.08 10.49-11.08l10.02-.41s-.58.77-1.59 1.01l-6.54 2.13c-5.55 2.23-8.08 3.35-9.8 10.94c0 0-2.22 8.83-2.64 9.76c-.58 1.3-1.27 1.57-1.27 1.57l1.33-13.92z" fill="#f4b400">
+            
+            </path>
+            
+            </g>
+            
+            <path d="M59.74 28.14c.56-.19.54-.99-.03-1.15l-7.72-2.08a4.77 4.77 0 0 1-3.34-3.3L45.61 9.06c-.15-.61-1.02-.61-1.17.01l-2.86 12.5a4.734 4.734 0 0 1-3.4 3.37l-7.67 1.99c-.57.15-.61.95-.05 1.15l8.09 2.8c1.45.5 2.57 1.68 3.01 3.15l2.89 11.59c.15.6 1.01.61 1.16 0l2.99-11.63a4.773 4.773 0 0 1 3.04-3.13l8.1-2.72z" fill="#f4b400" stroke="#f4b400" stroke-miterlimit="10">
+            
+            </path>
+            
+            </svg></button>
           </div>
           <div class="studydy-preview"></div>
         `;
@@ -1656,7 +1820,7 @@ function switchMode(mode, contentDiv, headerTitle) {
             return;
           }
 
-          previewDiv.innerHTML = '<p class="loadi">Generating studydy plan...</p>';
+          previewDiv.innerHTML = '<p class="loadi">Generating Study plan...</p>';
 
           try {
             const prompt = `
@@ -1667,7 +1831,7 @@ function switchMode(mode, contentDiv, headerTitle) {
               - Additional Information: ${additionalInfo || 'None'}
               
               Format the response with plain text:
-              - Use "Heading:" for section headers (e.g., "studydy Plan:", "Schedule:")
+              - Use "Heading:" for section headers (e.g., "Study Plan:", "Schedule:")
               - Do NOT use Markdown symbols like **, #, or |.
               - Use bullet points (-) for tasks
               - For the schedule, use a plain text table format:
@@ -1675,6 +1839,7 @@ function switchMode(mode, contentDiv, headerTitle) {
                   Monday    Algebra Basics     Textbook Ch. 1    1 hour
               - Preserve new lines for readability
               - Use clear, concise language
+              Present the information in a clear, point-wise format. Avoid using tables or tabular structure in the response
             `;
             const response = await fetch('https://ai.learneng.app/LearnEng/generate', {
               method: 'POST',
@@ -1686,10 +1851,21 @@ function switchMode(mode, contentDiv, headerTitle) {
               throw new Error(`API request failed: ${response.status}`);
             }
             const data = await response.json();
-            let formattedResponse = data.response
-              .replace(/(\w+\s*\w*:\s*)/g, '<strong>$1</strong>')
-              .replace(/\n/g, '<br>');
+            let formattedResponse =formatResponse(data.response);
+         
             previewDiv.innerHTML = `<div class="response-ccontent">${formattedResponse}</div>`;
+
+            // previewDiv = `
+            // <div class="response-ccontent">${formattedResponse}</div>
+            // <div class="response-coptions">
+            //   <button class="cop-btn cop-response" title="Copy"><img src="${chrome.runtime.getURL('icons/copy.png')}" alt="copy" style="width:14px;height:14px;"></button>
+            //   <button class="speaker-btn" title="Speak"><img src="${chrome.runtime.getURL('icons/speak.png')}" alt="speak" style="width:14px;height:14px;"></button>
+            //   <button class="edit-btn" title="Edit"><img src="${chrome.runtime.getURL('icons/edit.png')}" alt="edit" style="width:14px;height:14px;"></button>
+            //   <button class="retry-btn" title="Retry"><img src="${chrome.runtime.getURL('icons/reload.png')}" alt="retry" style="width:14px;height:14px;"></button>
+            // </div>`;
+
+            // addResponseoptionsListeners(previewDiv, true, () => generatestudydyPlan(contentDiv));
+
           } catch (error) {
             previewDiv.innerHTML = `<p class="erro">Error: ${error.message}</p>`;
           }
@@ -1705,7 +1881,41 @@ function switchMode(mode, contentDiv, headerTitle) {
             <label>Level: <select class="sum-level"  style=" margin-bottom:15px;"><option value="basic">Basic</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></label>
             <label style="margin-left: 10px;">Paragraphs: <input type="number" class="sum-paragraphs" min="1" max="5" value="1" style="width: 50px;"></label>
           </div>
-          <button class="generate-btntn">summarizere</button>
+          <button class="generate-btntn">Summarize <svg width="18px" height="18px" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
+              
+          <path d="M121.59 60.83l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.16-.59-.55-1.38-1.75-1.38c-1.01 0-1.59.79-1.75 1.38l-6.13 29.87c-2.46 9.06-7.67 16.27-16.58 19.21l-13.93 4.49c-1.97.64-2 3.42-.04 4.09l14.03 4.83c8.88 2.95 14.06 10.15 16.52 19.17l6.14 29.53c.16.59.49 1.65 1.75 1.65c1.33 0 1.59-1.06 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c1.94-.68 1.91-3.46-.06-4.1z" fill="#fdd835">
+          
+          </path>
+          
+          <path d="M122.91 62.08c-.22-.55-.65-1.03-1.32-1.25l-13.93-4.49c-8.91-2.94-14.13-10.15-16.58-19.21L84.95 7.27c-.09-.34-.41-.96-.78-1.14l1.98 29.97c1.47 13.68 2.73 20.12 13.65 22c9.38 1.62 20.23 3.48 23.11 3.98z" fill="#ffee58">
+          
+          </path>
+          
+          <path d="M122.94 63.64l-24.16 5.54c-8.51 2.16-13.2 7.09-13.2 19.99l-2.37 30.94c.81-.08 1.47-.52 1.75-1.65l6.14-29.53c2.46-9.03 7.64-16.23 16.52-19.17l14.03-4.83c.66-.24 1.08-.73 1.29-1.29z" fill="#f4b400">
+          
+          </path>
+          
+          <g>
+          
+          <path d="M41.81 86.81c-8.33-2.75-9.09-5.85-10.49-11.08l-3.49-12.24c-.21-.79-2.27-.79-2.49 0L22.97 74.8c-1.41 5.21-4.41 9.35-9.53 11.04l-8.16 3.54c-1.13.37-1.15 1.97-.02 2.35l8.22 2.91c5.1 1.69 8.08 5.83 9.5 11.02l2.37 10.82c.22.79 2.27.79 2.48 0l2.78-10.77c1.41-5.22 3.57-9.37 10.5-11.07l7.72-2.91c1.13-.39 1.12-1.99-.02-2.36l-7-2.56z" fill="#fdd835">
+          
+          </path>
+          
+          <path d="M28.49 75.55c.85 7.86 1.28 10.04 7.65 11.67l13.27 2.59c-.14-.19-.34-.35-.61-.43l-7-2.57c-7.31-2.5-9.33-5.68-10.7-12.04c-1.37-6.36-2.83-10.51-2.83-10.51c-.51-1.37-1.24-1.3-1.24-1.3l1.46 12.59z" fill="#ffee58">
+          
+          </path>
+          
+          <path d="M28.73 102.99c0-7.41 4.05-11.08 10.49-11.08l10.02-.41s-.58.77-1.59 1.01l-6.54 2.13c-5.55 2.23-8.08 3.35-9.8 10.94c0 0-2.22 8.83-2.64 9.76c-.58 1.3-1.27 1.57-1.27 1.57l1.33-13.92z" fill="#f4b400">
+          
+          </path>
+          
+          </g>
+          
+          <path d="M59.74 28.14c.56-.19.54-.99-.03-1.15l-7.72-2.08a4.77 4.77 0 0 1-3.34-3.3L45.61 9.06c-.15-.61-1.02-.61-1.17.01l-2.86 12.5a4.734 4.734 0 0 1-3.4 3.37l-7.67 1.99c-.57.15-.61.95-.05 1.15l8.09 2.8c1.45.5 2.57 1.68 3.01 3.15l2.89 11.59c.15.6 1.01.61 1.16 0l2.99-11.63a4.773 4.773 0 0 1 3.04-3.13l8.1-2.72z" fill="#f4b400" stroke="#f4b400" stroke-miterlimit="10">
+          
+          </path>
+          
+          </svg></button>
         </div>
         <div class="summarizerer-preview response-ccontainer" style="flex-grow: 1; padding: 10px; overflow-y: auto; background: #f9f9f9; max-height: calc(100vh - 250px);"></div>
       `;
@@ -1782,28 +1992,37 @@ function switchMode(mode, contentDiv, headerTitle) {
                             <div class="ai-setti-field">
                               <label for="role">Role</label>
                               <select id="role">
-                                <option value="student" ${userProfile?.role === 'student' ? 'selected' : ''}>student</option>
+                                <option value="student" ${userProfile?.role === 'student' ? 'selected' : ''}>Student</option>
                                 <option value="teacher" ${userProfile?.role === 'teacher' ? 'selected' : ''}>Teacher</option>
                               
                               </select>
                             </div>
                             <div class="ai-setti-field">
-  <div style="display: flex; align-items: center; gap: 12px;">
-    <label for="auto-navigate" style="margin: 0;">Enable Automatic Navigation</label>
-    
-    <!-- Toggle Switch -->
-    <label class="toggle-swit">
-      <input type="checkbox" id="auto-navigate" ${userProfile?.autoNavigate !== false ? 'checked' : ''}>
-      <span class="slid round"></span>
-    </label>
-  </div>
-</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <label for="auto-navigate" style="margin: 0;">Enable Automatic Navigation</label>
+        <label class="toggle-swit">
+          <input type="checkbox" id="auto-navigate" ${userProfile?.autoNavigate ? 'checked' : ''}>
+          <span class="slid round"></span>
+        </label>
+      </div>
+    </div>
+
+
+
+
                           
                             <button class="ai-setti-save">Save Settings</button>
                           </div>
                         </div>
                       `;
-
+                      const autoNavToggle = contentDiv.querySelector('#auto-navigate');
+                      autoNavToggle.addEventListener('change', function() {
+                        if (this.checked) {
+                          showAutoNavDisclaimer();
+                          // Immediately uncheck until user accepts
+                          this.checked = false;
+                        }
+                      });
         const saveBtn = contentDiv.querySelector('.ai-setti-save');
         saveBtn.addEventListener('click', () => {
           const username = contentDiv.querySelector('#username').value.trim();
@@ -1826,6 +2045,78 @@ function switchMode(mode, contentDiv, headerTitle) {
             console.log('User profile saved:', userProfile);
             renderProfileView();
           });
+        });
+      }
+      function showAutoNavDisclaimer() {
+        const disclaimerModal = document.createElement('div');
+        disclaimerModal.className = 'vidy-disclaimer-modal';
+        disclaimerModal.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.7);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 2147483647;
+        `;
+      
+        disclaimerModal.innerHTML = `
+          <div class="disclaimer-container" style="background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+            <h2 style="margin-top: 0;">Automatic Navigation Disclaimer</h2>
+            
+            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #eee; padding: 15px; border-radius: 8px;">
+              <p><strong>Please read carefully before enabling:</strong></p>
+              
+              <p>Automatic navigation allows Vidya to perform actions on web pages including:</p>
+              <ul style="padding-left: 20px;">
+                <li>Clicking buttons and links</li>
+                <li>Filling out forms</li>
+                <li>Navigating between pages</li>
+                <li>Scrolling to content</li>
+              </ul>
+              
+              <p><strong>Important considerations:</strong></p>
+              <ul style="padding-left: 20px;">
+                <li>Only enable on trusted websites</li>
+                <li>May perform actions without additional confirmation</li>
+                <li>Never enters sensitive information (passwords, payment details)</li>
+                <li>May not work perfectly on all websites</li>
+              </ul>
+              
+              <p>By enabling this feature, you acknowledge that:</p>
+              <ol style="padding-left: 20px;">
+                <li>Vidya will interact with web pages automatically</li>
+                <li>You are responsible for monitoring its actions</li>
+                <li>We're not responsible for any unintended consequences</li>
+              </ol>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+              <button id="decline-auto-nav" style="padding: 8px 16px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px;">Cancel</button>
+              <button id="accept-auto-nav" style="padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 4px;">Accept & Enable</button>
+            </div>
+          </div>
+        `;
+      
+        document.body.appendChild(disclaimerModal);
+      
+        // Handle user choice
+        document.getElementById('accept-auto-nav').addEventListener('click', () => {
+          userProfile.autoNavigate = true;
+          chrome.storage.local.set({ userProfile });
+          disclaimerModal.remove();
+          
+          // Re-check the toggle in settings
+          const autoNavToggle = document.querySelector('#auto-navigate');
+          if (autoNavToggle) autoNavToggle.checked = true;
+        });
+      
+        document.getElementById('decline-auto-nav').addEventListener('click', () => {
+          disclaimerModal.remove();
+          // Leave toggle unchecked (already set to false)
         });
       }
       // Helper function to render profile view
@@ -1894,8 +2185,284 @@ function stopVoiceRecognition() {
     recognition = null;
   }
 }
+
+
+function togglePin(option, selectedText, pinnedoptions) {
+  const index = pinnedoptions.indexOf(option);
+  const pinnedContainer = toolti.querySelector('.pinned-options');
+
+  if (index === -1) {
+    pinnedoptions.push(option);
+    pinnedContainer.innerHTML += `
+      <button class="pinned-option-btn" data-option="${option}" title="${option.charAt(0).toUpperCase() + option.slice(1)}">
+        <img src="${chrome.runtime.getURL(`icons/${option}.png`)}" alt="${option}" style="width: 15px !important; height: 15px !important;">
+      </button>
+    `;
+  } else {
+    pinnedoptions.splice(index, 1);
+    const pinnedBtn = pinnedContainer.querySelector(`[data-option="${option}"]`);
+    if (pinnedBtn) pinnedBtn.remove();
+  }
+
+  const pinBtn = toolti.querySelector(`.pin-btn[data-option="${option}"]`);
+  if (pinBtn) {
+    pinBtn.classList.toggle('active');
+    pinBtn.innerHTML = pinBtn.classList.contains('active') ?
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="#2196F3"><path d="M16 3l-8 8 4 4-8 8 2 2 8-8 4 4 8-8-2-2-8 8-4-4 8-8z"/></svg>' :
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="#888"><path d="M12 2l-2 8h-4l8 12 2-8h4l-8-12z"/></svg>';
+  }
+
+  const pinnedBtns = pinnedContainer.querySelectorAll('.pinned-option-btn');
+  pinnedBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const opt = btn.getAttribute('data-option');
+      callOpenAIApi(selectedText, opt);
+    });
+  });
+
+  chrome.storage.local.set({ [PINNED_OPTIONS_KEY]: pinnedOptions }); 
+}
+
+function createPinnedoption(option, selectedText) {
+  return `
+    <div class="pinned-option">
+      <button class="option-btn" data-option="${option}">${option.charAt(0).toUpperCase() + option.slice(1)}</button>
+      <button class="pin-btn" data-option="${option}" title="Unpin">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#2196F3">
+          <path d="M17 3v6h-3l-1 6h-3l-1-6H7V3h10zm-2 14v4h-4v-4H9l3-3 3 3h-2z"/>
+        </svg>
+      </button>
+    </div>
+  `;
+}
+function showtoolti(e, selectedText) {
+  if (toolti) toolti.remove();
+  if (chatContainer) chatContainer.style.display = 'none';
+
+  chrome.storage.local.get([PINNED_OPTIONS_KEY], (result) => {
+    pinnedOptions = result[PINNED_OPTIONS_KEY] || [];
+    toolti = document.createElement('div');
+    toolti.className = 'custom-toolti';
+    toolti.innerHTML = `
+      <div class="button-row">
+        <button class="ask-ai-btn" title="Ask AI" style="background-color: white !important;">
+          <img src="${chrome.runtime.getURL('icons/Vidya4b.png')}" alt="AI">
+        </button>
+        <button class="cop-btn cop-response" title="Copy Text" style="background-color: white !important;" >
+           <img src="${chrome.runtime.getURL('icons/copy.png')}" alt="copy" style="width:15px !important;height:15px !important;background-color: white !important;
+           ">
+        </button>
+        <button class="speak-btn" title="Speak Text"style="background-color: white !important;" >
+          <img src="${chrome.runtime.getURL('icons/speak.png')}" alt="copy" style="width:15px !important;height:15px !important;background-color: white !important;">
+        </button>
+        <div class="pinned-options"></div>
+        <button class="menu-btn" title="More options" style="background-color: white !important;color:black !important;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#495057">
+            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="menu-options" style="display: none;"></div>
+      <div id="interaction-container" style="margin-bottom:2%;"></div>
+    `;
+    document.body.appendChild(toolti);
+
+    const range = window.getSelection().getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    requestAnimationFrame(() => {
+      const tooltiWidth = Math.min(toolti.offsetWidth, viewportWidth * 0.5);
+      const tooltiHeight = toolti.offsetHeight;
+      let topPosition = rect.bottom + scrollY + 5;
+      let leftPosition = rect.left + scrollX;
+
+      if (leftPosition + tooltiWidth > scrollX + viewportWidth - 10) {
+        leftPosition = scrollX + viewportWidth - tooltiWidth - 10;
+      }
+      if (leftPosition < scrollX + 10) leftPosition = scrollX + 10;
+      if (topPosition + tooltiHeight > scrollY + viewportHeight - 10) {
+        topPosition = rect.top + scrollY - tooltiHeight - 5;
+      }
+      if (topPosition < scrollY + 10) topPosition = scrollY + 10;
+
+      toolti.style.top = `${topPosition}px`;
+      toolti.style.left = `${leftPosition}px`;
+    });
+
+    setupEventListeners(selectedText);
+    setupMenuoptions(selectedText, pinnedOptions);
+    const pinnedContainer = toolti.querySelector('.pinned-options');
+    pinnedOptions.forEach(option => {
+      pinnedContainer.innerHTML += `
+        <button class="pinned-option-btn" data-option="${option}" 
+                title="${option.charAt(0).toUpperCase() + option.slice(1)}">
+          <img src="${chrome.runtime.getURL(`icons/${option}.png`)}" 
+               alt="${option}" 
+               style="width:15px;height:15px;">
+        </button>
+      `;
+    });
+    const pinnedBtns = pinnedContainer.querySelectorAll('.pinned-option-btn');
+    pinnedBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        callOpenAIApi(selectedText, btn.dataset.option);
+      });
+    });
+    document.addEventListener('mousedown', (e) => {
+      if (toolti && !toolti.contains(e.target)) {
+        stopLiveAudio(() => {
+          toolti.remove();
+          toolti = null;
+          if (chatContainer) chatContainer.style.display = 'block';
+        });
+      }
+    }, { once: true });
+  });
+}
+function createTooltipButton(option) {
+  const btn = document.createElement('button');
+  btn.textContent = option.name;
+  btn.className = 'tooltip-btn';
+  
+  // Add pin button
+  const pinBtn = document.createElement('span');
+  pinBtn.className = 'pin-btn';
+  pinBtn.innerHTML = '📌';
+  pinBtn.title = 'Pin this option';
+  
+  pinBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePinOption(option);
+  });
+  
+  btn.appendChild(pinBtn);
+  return btn;
+}
+
+function togglePinOption(option) {
+  const index = pinnedOptions.findIndex(o => o.id === option.id);
+  
+  if (index === -1) {
+    pinnedOptions.push(option);
+  } else {
+    pinnedOptions.splice(index, 1);
+  }
+  chrome.storage.local.set({ [PINNED_OPTIONS_KEY]: pinnedOptions });
+
+  
+  // Refresh tooltip to show changes
+  if (toolti) {
+    toolti.remove();
+    toolti = null;
+    showtoolti(lastEvent, lastSelection);
+  }
+}
+
+
+function setupEventListeners(selectedText) {
+  const askAiBtn = toolti.querySelector('.ask-ai-btn');
+  const copyBtn = toolti.querySelector('.cop-btn');
+  const speakBtn = toolti.querySelector('.speak-btn');
+  const pinnedContainer = toolti.querySelector('.pinned-options');
+
+  askAiBtn.addEventListener('click', () => {
+    isVoiceMode = false; // Ensure text mode is default
+    updateInteractionContainer(selectedText);
+  });
+  copyBtn.addEventListener('click', () => copyText(selectedText, copyBtn));
+  speakBtn.addEventListener('click', () => speakText(selectedText));
+
+  if (pinnedContainer) {
+    const pinnedBtns = pinnedContainer.querySelectorAll('.pinned-option-btn');
+    pinnedBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const option = btn.getAttribute('data-option');
+        callOpenAIApi(selectedText, option);
+      });
+    });
+  }
+}
+function setupMenuoptions(selectedText, pinnedoptions) {
+  const menuBtn = toolti.querySelector('.menu-btn');
+  const menuoptions = toolti.querySelector('.menu-options');
+  const options = [
+    { name: 'Translate', icon: 'icons/translate.png' },
+    { name: 'summarize', icon: 'icons/summarize.png' },
+    { name: 'Explain', icon: 'icons/explain.png' },
+    { name: 'Definition', icon: 'icons/definition.png' }
+  ];
+
+  if (!menuBtn || !menuoptions) return;
+
+  menuBtn.onclick = (e) => {
+    e.stopPropagation();
+    const isVisible = menuoptions.style.display === 'flex';
+    menuoptions.style.display = isVisible ? 'none' : 'flex';
+
+    if (menuoptions.innerHTML === '' && !isVisible) {
+      options.forEach(option => {
+        const isPinned = pinnedoptions.includes(option.name.toLowerCase());
+        menuoptions.innerHTML += `
+          <div class="menu-option">
+            <button class="option-btn" data-option="${option.name.toLowerCase()}">
+              <img src="${chrome.runtime.getURL(option.icon)}" alt="${option.name}">
+              ${option.name}
+            </button>
+            <button class="pin-btn ${isPinned ? 'active' : ''}" data-option="${option.name.toLowerCase()}" title="${isPinned ? 'Unpin' : 'Pin'}">
+              ${isPinned ?
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="#2196F3"><path d="M16 3l-8 8 4 4-8 8 2 2 8-8 4 4 8-8-2-2-8 8-4-4 8-8z"/></svg>' :
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="#888"><path d="M12 2l-2 8h-4l8 12 2-8h4l-8-12z"/></svg>'}
+            </button>
+          </div>
+        `;
+      });
+
+      // Adjust toolti position when menu-options are shown
+      requestAnimationFrame(() => {
+        const tooltiWidth = toolti.offsetWidth;
+        const menuoptionsWidth = menuoptions.offsetWidth;
+        const totalWidth = tooltiWidth + menuoptionsWidth + 8; // Include gap
+        const currentLeft = parseFloat(toolti.style.left);
+
+        if (currentLeft + totalWidth > scrollX + viewportWidth) {
+          toolti.style.left = `${scrollX + viewportWidth - totalWidth - 5}px`;
+        }
+      });
+
+      const optionBtns = menuoptions.querySelectorAll('.option-btn');
+      optionBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const option = btn.getAttribute('data-option');
+          callOpenAIApi(selectedText, option);
+          menuoptions.style.display = 'none';
+        });
+      });
+
+      const pinBtns = menuoptions.querySelectorAll('.pin-btn');
+      pinBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const option = btn.getAttribute('data-option');
+          togglePin(option, selectedText, pinnedoptions);
+        });
+      });
+    }
+  };
+
+  document.addEventListener('mousedown', (e) => {
+    if (toolti && !toolti.contains(e.target)) {
+      menuoptions.style.display = 'none';
+    }
+  }, { once: true });
+}
+
 async function generatewritingng(contentDiv) {
-  const type = contentDiv.querySelector('.writingng-type').value;
+  const type = contentDiv.querySelector('.writing-type-badge.selected')?.dataset.value;
   const topic = contentDiv.querySelector('.writingng-topic').value || window.getSelection().toString().trim();
   const recipient = contentDiv.querySelector('.writingng-recipient').value;
   const preview = contentDiv.querySelector('.writingng-preview');
@@ -1914,11 +2481,13 @@ async function generatewritingng(contentDiv) {
         <button class="edit-btn" title="Edit"><img src="${chrome.runtime.getURL('icons/edit.png')}" alt="edit" style="width:14px;height:14px;"></button>
         <button class="retry-btn" title="Retry"><img src="${chrome.runtime.getURL('icons/reload.png')}" alt="retry" style="width:14px;height:14px;"></button>
       </div>`;
+      preview.style.display="flex";
     addResponseoptionsListeners(preview, true, () => generatewritingng(contentDiv));
   } catch (error) {
     preview.innerHTML = `<p class="erro">Error generating response: ${error.message}</p>`;
   }
 }
+
 
 function updateRoleInputs() {
   const container = document.querySelector('#role-names-container');
@@ -2498,11 +3067,8 @@ async function generateRoleplay() {
     const data = await response.json();
 
     // Format response
-    let formattedResponse = data.response
-      .replace(/(Scene:.*)/, '<div class="scene-setting">$1</div>') // Scene setting
-      .replace(/([A-Za-z ]+):/g, '<div class="role-name">$1:</div>') // Character names
-      .replace(/\((.*?)\)/g, '<div class="stage-direction">($1)</div>') // Stage directions
-      .replace(/\n/g, '<br>');
+    let formattedResponse = formatResponse(data.response);
+     
 
     container.innerHTML = `
       <div class="roleplay-content">${formattedResponse}</div>
@@ -2563,9 +3129,9 @@ async function translateText() {
       <div class="translationon-output">
         <div class="translatedd-text">${data.response}</div>
         <div class="translationon-actions">
-          <button class="cop-translationon">Copy translationon</button>
-          <button class="speak-translationon">Speak translationon</button>
-          <button class="new-translationon">New translationon</button>
+          <button class="cop-translationon"><img src="${chrome.runtime.getURL('icons/copy.png')}" alt="copy" style="width:18px;height:18px;"></button>
+          <button class="speak-translationon"><img src="${chrome.runtime.getURL('icons/speak.png')}" alt="copy" style="width:18px;height:18px;"></button>
+          <button class="new-translationon" >Clear</button>
         </div>
       </div>
     `;
@@ -2627,11 +3193,8 @@ function handleQuizAction(e) {
       return response.json();
     })
     .then(data => {
-      let formattedResponse = data.response
-        .replace(/(\d+\.\s)/g, '<strong>$1</strong>')
-        .replace(/Answer:\s*(.*)/g, '<div class="quizz-answer">Answer: $1</div>')
-        .replace(/Explanation:\s*(.*)/g, '<div class="quizz-explanation">Explanation: $1</div>')
-        .replace(/\n/g, '<br>');
+      let formattedResponse = formatResponse(data.response);
+      
 
       preview.innerHTML = `
       <div class="quizz-content">${formattedResponse}</div>
@@ -2689,12 +3252,8 @@ function handleRoleplayAction(e) {
       return response.json();
     })
     .then(data => {
-      let formattedResponse = data.response
-        .replace(/(Scene:.*)/, '<div class="scene-setting">$1</div>')
-        .replace(/([A-Za-z ]+):/g, '<div class="role-name">$1:</div>')
-        .replace(/\((.*?)\)/g, '<div class="stage-direction">($1)</div>')
-        .replace(/\n/g, '<br>');
-
+      let formattedResponse = formatResponse(data.response);
+      
       preview.innerHTML = `
       <div class="roleplay-content">${formattedResponse}</div>
       <div class="roleplay-actions">
@@ -2727,7 +3286,7 @@ async function generatelessononPlan(contentDiv) {
   }
   preview.innerHTML = '<p class="loadi">Generating...</p>';
   try {
-    const response = await generateAIResponse('Generate a lessonon plan', { mode: 'lessonon-plan', details: { subject, grade, duration } });
+    const response = await generateAIResponse('Generate a lesson plan', { mode: 'lessonon-plan', details: { subject, grade, duration } });
     preview.innerHTML = `
       <div class="response-ccontent">${response.replace(/\n/g, '<br>')}</div>
       <div class="response-coptions">
@@ -2785,8 +3344,9 @@ async function generateSummary(contentDiv) {
   preview.innerHTML = '<p class="loadi">Generating...</p>';
   try {
     const response = await generateAIResponse(text, { mode: 'summarizerer', details: { level, paragraphs } });
+ 
     preview.innerHTML = `
-      <div class="response-ccontent">${response.replace(/\n/g, '<br>')}</div>
+      <div class="response-ccontent">${formatResponse(response)}</div>
       <div class="response-coptions">
         <button class="cop-btn cop-response" title="Copy"><img src="${chrome.runtime.getURL('icons/copy.png')}" alt="copy"  style="width:14px;height:14px;"></button>
         <button class="speaker-btn" title="Speak"><img src="${chrome.runtime.getURL('icons/speak.png')}" alt="speak" style="width:14px;height:14px;"></button>
@@ -3766,7 +4326,7 @@ function toggleSettingsPanel(populateFields = false) {
           <label style="color: #54656f; font-size: 12px; margin-bottom: 3px; display: block;">Role</label>
           <select id="role" style="width: 100%; padding: 8px; border: none; border-bottom: 1px solid #e0e0e0; font-size: 14px; outline: none; box-sizing: border-box;">
             <option value="">Select role</option>
-            <option value="student" ${populateFields && userProfile?.role === 'student' ? 'selected' : ''}>student</option>
+            <option value="student" ${populateFields && userProfile?.role === 'student' ? 'selected' : ''}>Student</option>
             <option value="teacher" ${populateFields && userProfile?.role === 'teacher' ? 'selected' : ''}>Teacher</option>
           </select>
         </div>
@@ -3818,13 +4378,13 @@ async function generateAIResponse(prompt, options = {}) {
       fullPrompt = `Generate a ${type} with the following details:\n- Topic: ${prompt}\n- Recipient: ${details.recipient || 'N/A'}`;
       break;
     case 'lessonon-plan':
-      fullPrompt = `Create a detailed lessonon plan with:\n- Subject: ${details.subject || 'N/A'}\n- Grade: ${details.grade || 'N/A'}\n- Duration: ${details.duration || 'N/A'}\n- Instructions: ${prompt}`;
+      fullPrompt = `Create a detailed lesson plan with:\n- Subject: ${details.subject || 'N/A'}\n- Grade: ${details.grade || 'N/A'}\n- Duration: ${details.duration || 'N/A'}\n- Instructions: ${prompt}`;
       break;
     case 'studydy-plan':
-      fullPrompt = `Create a detailed studydy plan in table format with:\n- Class: ${details.class || 'N/A'}\n- Subject: ${details.subject || 'N/A'}\n- Topic: ${details.topic || prompt}\n- Timeline: ${details.timeline || 'N/A'}`;
+      fullPrompt = `Create a detailed study plan in table format with:\n- Class: ${details.class || 'N/A'}\n- Subject: ${details.subject || 'N/A'}\n- Topic: ${details.topic || prompt}\n- Timeline: ${details.timeline || 'N/A'}`;
       break;
     case 'summarizerer':
-      fullPrompt = `summarizere the following text to ${details.level || 'intermediate'} level in ${details.paragraphs || 1} paragraph(s):\n${prompt}`;
+      fullPrompt = `summarize the following text to ${details.level || 'intermediate'} level in ${details.paragraphs || 1} paragraph(s):\n${prompt}`;
       break;
   }
 
@@ -3865,7 +4425,7 @@ function addResponseoptionsListeners(container, includeRetry, retryCallback) {
 
   editBtn.addEventListener('click', () => {
     const textarea = document.createElement('textarea');
-    textarea.value = content;
+    textarea.value = formatResponse(content);
     textarea.style.width = '100%';
     textarea.style.height = 'auto';
     textarea.style.minHeight = '100px';
@@ -4000,7 +4560,7 @@ Response Format (JSON):
         });
       }
 
-      responseObj.formattedAnswer = formattedAnswer;
+      responseObj.formattedAnswer =  formatResponse(formattedAnswer);
     } catch (e) {
       console.error('Failed to parse API response:', e);
       responseObj = {
@@ -4135,6 +4695,7 @@ function addMessageToChat(role, content, messagesDiv, recommendedQuestions = [])
     <button class="edit-btn" title="Edit"><img src="${chrome.runtime.getURL('icons/edit.png')}" alt="edit" style="width:14px;height:14px;"></button>
     
   `;
+  
   messageDiv.appendChild(optionsDiv);
   // Check if we have recommended questions either passed directly or from pageContentScraper
   const questionsToShow = recommendedQuestions.length > 0
@@ -4252,7 +4813,7 @@ async function callOpenAIApi(selectedText, option) {
         prompt = `Translate this text to ${nativeLanguage}: "${selectedText}"`;
         break;
       case 'summarizere':
-        prompt = `summarizere this text: "${selectedText}"`;
+        prompt = `summarize this text: "${selectedText}"`;
         break;
       case 'explain':
         prompt = `Explain this text: "${selectedText}"`;
@@ -4390,199 +4951,7 @@ const languageMap = {
 };
 
 
-function togglePin(option, selectedText, pinnedoptions) {
-  const index = pinnedoptions.indexOf(option);
-  const pinnedContainer = toolti.querySelector('.pinned-options');
 
-  if (index === -1) {
-    pinnedoptions.push(option);
-    pinnedContainer.innerHTML += `
-      <button class="pinned-option-btn" data-option="${option}" title="${option.charAt(0).toUpperCase() + option.slice(1)}">
-        <img src="${chrome.runtime.getURL(`icons/${option}.png`)}" alt="${option}" style="width: 24px; height: 24px;">
-      </button>
-    `;
-  } else {
-    pinnedoptions.splice(index, 1);
-    const pinnedBtn = pinnedContainer.querySelector(`[data-option="${option}"]`);
-    if (pinnedBtn) pinnedBtn.remove();
-  }
-
-  const pinBtn = toolti.querySelector(`.pin-btn[data-option="${option}"]`);
-  if (pinBtn) {
-    pinBtn.classList.toggle('active');
-    pinBtn.innerHTML = pinBtn.classList.contains('active') ?
-      '<svg width="16" height="16" viewBox="0 0 24 24" fill="#2196F3"><path d="M16 3l-8 8 4 4-8 8 2 2 8-8 4 4 8-8-2-2-8 8-4-4 8-8z"/></svg>' :
-      '<svg width="16" height="16" viewBox="0 0 24 24" fill="#888"><path d="M12 2l-2 8h-4l8 12 2-8h4l-8-12z"/></svg>';
-  }
-
-  const pinnedBtns = pinnedContainer.querySelectorAll('.pinned-option-btn');
-  pinnedBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const opt = btn.getAttribute('data-option');
-      callOpenAIApi(selectedText, opt);
-    });
-  });
-
-  chrome.storage.local.set({ pinnedoptions });
-}
-
-function createPinnedoption(option, selectedText) {
-  return `
-    <div class="pinned-option">
-      <button class="option-btn" data-option="${option}">${option.charAt(0).toUpperCase() + option.slice(1)}</button>
-      <button class="pin-btn" data-option="${option}" title="Unpin">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="#2196F3">
-          <path d="M17 3v6h-3l-1 6h-3l-1-6H7V3h10zm-2 14v4h-4v-4H9l3-3 3 3h-2z"/>
-        </svg>
-      </button>
-    </div>
-  `;
-}
-function showtoolti(e, selectedText) {
-  if (toolti) toolti.remove();
-  if (chatContainer) chatContainer.style.display = 'none';
-
-  chrome.storage.local.get(['pinnedoptions'], (result) => {
-    const pinnedoptions = result.pinnedoptions || [];
-    toolti = document.createElement('div');
-    toolti.className = 'custom-toolti';
-    toolti.innerHTML = `
-      <div class="button-row">
-        <button class="ask-ai-btn" title="Ask AI">
-          <img src="${chrome.runtime.getURL('icons/Vidya4b.png')}" alt="AI">
-        </button>
-        <button class="cop-btn cop-response" title="Copy Text">
-           <img src="${chrome.runtime.getURL('icons/copy.png')}" alt="copy">
-        </button>
-        <button class="speak-btn" title="Speak Text">
-          <img src="${chrome.runtime.getURL('icons/speak.png')}" alt="copy">
-        </button>
-        <div class="pinned-options"></div>
-        <button class="menu-btn" title="More options">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#495057">
-            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-          </svg>
-        </button>
-      </div>
-      <div class="menu-options" style="display: none;"></div>
-      <div id="interaction-container" style="margin-bottom:2%;"></div>
-    `;
-    document.body.appendChild(toolti);
-
-    const range = window.getSelection().getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    requestAnimationFrame(() => {
-      const tooltiWidth = Math.min(toolti.offsetWidth, viewportWidth * 0.5);
-      const tooltiHeight = toolti.offsetHeight;
-      let topPosition = rect.bottom + scrollY + 5;
-      let leftPosition = rect.left + scrollX;
-
-      if (leftPosition + tooltiWidth > scrollX + viewportWidth - 10) {
-        leftPosition = scrollX + viewportWidth - tooltiWidth - 10;
-      }
-      if (leftPosition < scrollX + 10) leftPosition = scrollX + 10;
-      if (topPosition + tooltiHeight > scrollY + viewportHeight - 10) {
-        topPosition = rect.top + scrollY - tooltiHeight - 5;
-      }
-      if (topPosition < scrollY + 10) topPosition = scrollY + 10;
-
-      toolti.style.top = `${topPosition}px`;
-      toolti.style.left = `${leftPosition}px`;
-    });
-
-    setupEventListeners(selectedText);
-    setupMenuoptions(selectedText, pinnedoptions);
-
-    document.addEventListener('mousedown', (e) => {
-      if (toolti && !toolti.contains(e.target)) {
-        stopLiveAudio(() => {
-          toolti.remove();
-          toolti = null;
-          if (chatContainer) chatContainer.style.display = 'block';
-        });
-      }
-    }, { once: true });
-  });
-}
-function setupMenuoptions(selectedText, pinnedoptions) {
-  const menuBtn = toolti.querySelector('.menu-btn');
-  const menuoptions = toolti.querySelector('.menu-options');
-  const options = [
-    { name: 'Translate', icon: 'icons/translate.png' },
-    { name: 'summarizere', icon: 'icons/summarizere.png' },
-    { name: 'Explain', icon: 'icons/explain.png' },
-    { name: 'Definition', icon: 'icons/definition.png' }
-  ];
-
-  if (!menuBtn || !menuoptions) return;
-
-  menuBtn.onclick = (e) => {
-    e.stopPropagation();
-    const isVisible = menuoptions.style.display === 'flex';
-    menuoptions.style.display = isVisible ? 'none' : 'flex';
-
-    if (menuoptions.innerHTML === '' && !isVisible) {
-      options.forEach(option => {
-        const isPinned = pinnedoptions.includes(option.name.toLowerCase());
-        menuoptions.innerHTML += `
-          <div class="menu-option">
-            <button class="option-btn" data-option="${option.name.toLowerCase()}">
-              <img src="${chrome.runtime.getURL(option.icon)}" alt="${option.name}">
-              ${option.name}
-            </button>
-            <button class="pin-btn ${isPinned ? 'active' : ''}" data-option="${option.name.toLowerCase()}" title="${isPinned ? 'Unpin' : 'Pin'}">
-              ${isPinned ?
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="#2196F3"><path d="M16 3l-8 8 4 4-8 8 2 2 8-8 4 4 8-8-2-2-8 8-4-4 8-8z"/></svg>' :
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="#888"><path d="M12 2l-2 8h-4l8 12 2-8h4l-8-12z"/></svg>'}
-            </button>
-          </div>
-        `;
-      });
-
-      // Adjust toolti position when menu-options are shown
-      requestAnimationFrame(() => {
-        const tooltiWidth = toolti.offsetWidth;
-        const menuoptionsWidth = menuoptions.offsetWidth;
-        const totalWidth = tooltiWidth + menuoptionsWidth + 8; // Include gap
-        const currentLeft = parseFloat(toolti.style.left);
-
-        if (currentLeft + totalWidth > scrollX + viewportWidth) {
-          toolti.style.left = `${scrollX + viewportWidth - totalWidth - 5}px`;
-        }
-      });
-
-      const optionBtns = menuoptions.querySelectorAll('.option-btn');
-      optionBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const option = btn.getAttribute('data-option');
-          callOpenAIApi(selectedText, option);
-          menuoptions.style.display = 'none';
-        });
-      });
-
-      const pinBtns = menuoptions.querySelectorAll('.pin-btn');
-      pinBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const option = btn.getAttribute('data-option');
-          togglePin(option, selectedText, pinnedoptions);
-        });
-      });
-    }
-  };
-
-  document.addEventListener('mousedown', (e) => {
-    if (toolti && !toolti.contains(e.target)) {
-      menuoptions.style.display = 'none';
-    }
-  }, { once: true });
-}
 function updateInteractionContainer(selectedText) {
   if (!toolti) return;
   const container = toolti.querySelector('#interaction-container') || document.createElement('div');
@@ -4691,29 +5060,7 @@ function cleanuptoolti() {
   });
 }
 
-function setupEventListeners(selectedText) {
-  const askAiBtn = toolti.querySelector('.ask-ai-btn');
-  const copyBtn = toolti.querySelector('.cop-btn');
-  const speakBtn = toolti.querySelector('.speak-btn');
-  const pinnedContainer = toolti.querySelector('.pinned-options');
 
-  askAiBtn.addEventListener('click', () => {
-    isVoiceMode = false; // Ensure text mode is default
-    updateInteractionContainer(selectedText);
-  });
-  copyBtn.addEventListener('click', () => copyText(selectedText, copyBtn));
-  speakBtn.addEventListener('click', () => speakText(selectedText));
-
-  if (pinnedContainer) {
-    const pinnedBtns = pinnedContainer.querySelectorAll('.pinned-option-btn');
-    pinnedBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const option = btn.getAttribute('data-option');
-        callOpenAIApi(selectedText, option);
-      });
-    });
-  }
-}
 
 function setupToggleListeners(selectedText) {
   if (!toolti) return;
@@ -5235,15 +5582,48 @@ async function askAI(selectedText, prompt) {
     if (toolti && responseContainer) responseContainer.innerHTML = `<div class="erro">Error: ${error.message}</div>`;
   }
 }
+function formatResponse(text) {
+  return text
+    // Code blocks
+    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    // Heading level 3
+    .replace(/^### (.*$)/gim, '<h2>$1</h2>')
+    // Heading level 2
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    // Heading level 1
+    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+    // Bold
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Italic
+    .replace(/(?<!\*)\*(?!\*)(.*?)\*(?!\*)/g, '<em>$1</em>')
+    .replace(/_(.*?)_/g, '<em>$1</em>')
+    // Inline code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // Blockquote
+    .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
+    // Links
+    .replace(/\[([^\]]+)]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+    // Horizontal rule
+    .replace(/^---$/gm, '<hr>')
+    // Bullet list
+    .replace(/^\s*-\s+(.*)$/gm, '<li>$1</li>')
+    // Numbered list
+    .replace(/^\s*\d+\.\s+(.*)$/gm, '<li>$1</li>')
+    // Line breaks
+    .replace(/\n/g, '<br>');
+}
+
+
 function showResponse(data, selectedText) {
   if (!toolti) return;
   const responseContainer = toolti.querySelector('#response-ccontainer');
   if (!responseContainer) return;
 
-  const formattedResponse = data.response
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/### (.*?)(?=\n|$)/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br>');
+  // const formattedResponse = data.response
+  //   .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  //   .replace(/### (.*?)(?=\n|$)/g, '<strong>$1</strong>')
+  //   .replace(/\n/g, '<br>');
+  const formattedResponse = formatResponse(data.response);
 
   responseContainer.innerHTML = `
       <div class="response-ccontent">${formattedResponse}</div>

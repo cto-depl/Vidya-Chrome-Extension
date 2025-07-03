@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions - Vidya AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-blue: #4285f4;
+            --accent-purple: #6c5ce7;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --border-light: #e2e8f0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-light);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Google Sans', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-purple);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-3px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0 4rem;
+        }
+
+        .terms-container {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: 3rem;
+            margin-top: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .last-updated {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            background: var(--bg-light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc h3 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .toc-list li {
+            padding: 0.5rem 0;
+        }
+
+        .toc-list a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toc-list a:hover {
+            color: var(--accent-purple);
+            transform: translateX(5px);
+        }
+
+        .toc-list a::before {
+            content: '→';
+            color: var(--accent-purple);
+            font-weight: bold;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 80px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section-number {
+            background: var(--primary-gradient);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .section h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .section-content {
+            padding-left: 3rem;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .section ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .section li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(240, 147, 251, 0.1), rgba(245, 87, 108, 0.1));
+            border: 1px solid rgba(240, 147, 251, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--secondary-gradient);
+            border-radius: 2px 0 0 2px;
+        }
+
+        .highlight-box h4 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .highlight-box ul {
+            margin-bottom: 0;
+        }
+
+        /* Important Notice */
+        .important-notice {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 87, 34, 0.1));
+            border: 2px solid rgba(255, 193, 7, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .important-notice::before {
+            content: '⚠️';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--bg-white);
+            padding: 0 10px;
+            font-size: 1.5rem;
+        }
+
+        .important-notice h4 {
+            color: #e67e22;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .contact-section h3 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .contact-item i {
+            color: var(--accent-purple);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer .logo {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* Scroll to Top */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary-gradient);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .terms-container {
+                padding: 2rem 1.5rem;
+                margin-top: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .section-content {
+                padding-left: 0;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .terms-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .page-header {
+                margin-bottom: 2rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="./index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+            <a href="./index.html" class="logo">Vidya AI</a>
+            
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+           
+
+            <div class="terms-container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1>Terms and Conditions</h1>
+                    <div class="last-updated">
+                        <i class="fas fa-calendar-alt"></i>
+                        Last Updated: June 26, 2025
+                    </div>
+                </div>
+
+                <!-- Table of Contents -->
+                <div class="toc" style="display:none;">
+                    <h3><i class="fas fa-list"></i> Table of Contents</h3>
+                    <ul class="toc-list">
+                        <li><a href="#acceptance">Acceptance of Terms</a></li>
+                        <li><a href="#definitions">Definitions</a></li>
+                        <li><a href="#license">License Grant</a></li>
+                        <li><a href="#responsibilities">User Responsibilities</a></li>
+                        <li><a href="#privacy">Privacy & Data Handling</a></li>
+                        <li><a href="#ai-content">AI-Generated Content</a></li>
+                        <li><a href="#intellectual">Intellectual Property</a></li>
+                        <li><a href="#payment">Payment & Subscriptions</a></li>
+                        <li><a href="#limitations">Limitations & Disclaimers</a></li>
+                        <li><a href="#termination">Termination</a></li>
+                        <li><a href="#modifications">Modifications</a></li>
+                        <li><a href="#governing">Governing Law</a></li>
+                        <li><a href="#contact">Contact Information</a></li>
+                    </ul>
+                </div>
+
+                <!-- Section 1: Acceptance of Terms -->
+                <section class="section" id="acceptance">
+                    <div class="section-header">
+                        <div class="section-number">1</div>
+                        <h2>Acceptance of Terms</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>By installing or using the Vidya AI Assistant Chrome extension ("Extension"), you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to all terms, immediately cease using the Extension.</p>
+                        
+                        <div class="important-notice">
+                            <h4>Important Notice</h4>
+                            <p>Your continued use of the Extension constitutes acceptance of these Terms and any future modifications. Please review these Terms periodically for updates.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Definitions -->
+                <section class="section" id="definitions">
+                    <div class="section-header">
+                        <div class="section-number">2</div>
+                        <h2>Definitions</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="highlight-box">
+                            <h4>Key Terms</h4>
+                            <ul>
+                                <li><strong>"Extension"</strong>: Vidya AI Assistant Chrome browser plugin</li>
+                                <li><strong>"User"</strong>: Any individual or entity using the Extension</li>
+                                <li><strong>"Content"</strong>: AI-generated responses, translations, lesson plans, etc.</li>
+                                <li><strong>"Data"</strong>: Information collected through Extension use</li>
+                                <li><strong>"Service"</strong>: All features and functionality provided by Vidya AI</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 3: License Grant -->
+                <section class="section" id="license">
+                    <div class="section-header">
+                        <div class="section-number">3</div>
+                        <h2>License Grant</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Subject to compliance with these Terms, we grant you a limited, non-exclusive, non-transferable license to:</p>
+                        <ul>
+                            <li>Install and use the Extension for personal/educational purposes</li>
+                            <li>Access AI-generated educational content</li>
+                            <li>Utilize translation and learning assistance features</li>
+                        </ul>
+                        <p>This license does not include the right to distribute, modify, or reverse engineer the Extension.</p>
+                    </div>
+                </section>
+
+                <!-- Section 4: User Responsibilities -->
+                <section class="section" id="responsibilities">
+                    <div class="section-header">
+                        <div class="section-number">4</div>
+                        <h2>User Responsibilities</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>You agree to:</p>
+                        <div class="highlight-box">
+                            <h4>Your Commitments</h4>
+                            <ul>
+                                <li><strong>Account Security</strong>: Maintain confidentiality of login credentials</li>
+                                <li><strong>Lawful Use</strong>: Not use the Extension for illegal activities or content generation</li>
+                                <li><strong>Age Requirement</strong>: Be at least 13 years old (or have parental consent if younger)</li>
+                                <li><strong>Content Ownership</strong>: Ensure any inputted text doesn't violate third-party rights</li>
+                                <li><strong>Respect Usage Limits</strong>: Use the service reasonably without excessive automated requests</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 5: Privacy & Data Handling -->
+                <section class="section" id="privacy">
+                    <div class="section-header">
+                        <div class="section-number">5</div>
+                        <h2>Privacy & Data Handling</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="highlight-box">
+                            <h4>Data Collection</h4>
+                            <p>We collect:</p>
+                            <ul>
+                                <li>Email addresses during registration</li>
+                                <li>Usage patterns (e.g., feature frequency)</li>
+                                <li>Page content accessed via our analysis system</li>
+                                <li>Voice inputs for processing (not stored)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <h4>Data Usage</h4>
+                            <p>Collected data is used to:</p>
+                            <ul>
+                                <li>Personalize educational content</li>
+                                <li>Improve AI response quality</li>
+                                <li>Troubleshoot technical issues</li>
+                                <li>Analyze usage patterns for service improvement</li>
+                            </ul>
+                        </div>
+                        
+                        <p><strong>Third Parties:</strong> Google Sheets integration (for allowed emails) is subject to Google's Privacy Policy. Refer to our separate Privacy Policy for full details.</p>
+                    </div>
+                </section>
+
+                <!-- Section 6: AI-Generated Content -->
+                <section class="section" id="ai-content">
+                    <div class="section-header">
+                        <div class="section-number">6</div>
+                        <h2>AI-Generated Content</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="important-notice">
+                            <h4>Content Accuracy Disclaimer</h4>
+                            <p>AI responses may contain inaccuracies. Always verify critical information from authoritative sources.</p>
+                        </div>
+                        
+                        <p><strong>Ownership:</strong> Users retain rights to inputted text; AI outputs are licensed for personal use only.</p>
+                        
+                        <div class="highlight-box">
+                            <h4>Prohibited Uses</h4>
+                            <ul>
+                                <li>Generating illegal or academic-dishonesty content</li>
+                                <li>Automated commercial content production</li>
+                                <li>High-volume scraping via the Extension</li>
+                                <li>Creating content that violates intellectual property rights</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 7: Intellectual Property -->
+                <section class="section" id="intellectual">
+                    <div class="section-header">
+                        <div class="section-number">7</div>
+                        <h2>Intellectual Property</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="highlight-box">
+                            <h4>Rights Breakdown</h4>
+                            <ul>
+                                <li><strong>Our Rights:</strong> All Extension code, UI designs, and "Vidya" branding are owned by us</li>
+                                <li><strong>Your Rights:</strong> You own content you input; we claim no rights to user-provided text</li>
+                                <li><strong>AI Outputs:</strong> Generated content may incorporate third-party models (see documentation)</li>
+                                <li><strong>Trademarks:</strong> "Vidya AI" and associated marks are our property</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 8: Payment & Subscriptions -->
+                <section class="section" id="payment">
+                    <div class="section-header">
+                        <div class="section-number">8</div>
+                        <h2>Payment & Subscriptions</h2>
+                    </div>
+                    <div class="section-content">
+                        <ul>
+                            <li><strong>Free Version:</strong> Basic features available without payment</li>
+                            <li><strong>Premium Features:</strong> Paid subscriptions auto-renew monthly/annually</li>
+                            <li><strong>Cancellation:</strong> May cancel anytime via Chrome Web Store or account settings</li>
+                            <li><strong>Refunds:</strong> Processed according to Chrome Web Store policies</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 9: Limitations & Disclaimers -->
+                <section class="section" id="limitations">
+                    <div class="section-header">
+                        <div class="section-number">9</div>
+                        <h2>Limitations & Disclaimers</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="important-notice">
+                            <h4>Service Limitations</h4>
+                            <ul>
+                                <li><strong>Service "AS IS":</strong> No guarantees of uptime or accuracy</li>
+                                <li><strong>AI Limitations:</strong> Outputs may contain biases/errors inherent in language models</li>
+                                <li><strong>Educational Use:</strong> Not a substitute for professional academic advice</li>
+                                <li><strong>Liability Cap:</strong> Our total liability limited to fees paid (if any) in last 6 months</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 10: Termination -->
+                <section class="section" id="termination">
+                    <div class="section-header">
+                        <div class="section-number">10</div>
+                        <h2>Termination</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>We may terminate access if you:</p>
+                        <ul>
+                            <li>Violate these Terms</li>
+                            <li>Engage in abusive usage (e.g., spamming API)</li>
+                            <li>Attempt reverse engineering</li>
+                            <li>Use the service for harmful or illegal purposes</li>
+                        </ul>
+                        <p>Upon termination, your right to use the Extension ceases immediately.</p>
+                    </div>
+                </section>
+
+                <!-- Section 11: Modifications -->
+                <section class="section" id="modifications">
+                    <div class="section-header">
+                        <div class="section-number">11</div>
+                        <h2>Modifications</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>We may update these Terms with 30 days' notice via in-Extension notification or email. Continued use constitutes acceptance of revised Terms.</p>
+                        <p>Material changes will be highlighted and may require explicit re-acceptance.</p>
+                    </div>
+                </section>
+
+                <!-- Section 12: Governing Law -->
+                <section class="section" id="governing">
+                    <div class="section-header">
+                        <div class="section-number">12</div>
+                        <h2>Governing Law</h2>
+                    </div>
+                    <div class="section-content">
+                        <ul>
+                            <li>Governed by laws of India</li>
+                            <li>Disputes resolved in courts of Hyderabad, Telangana</li>
+                            <li>Both parties agree to attempt mediation before litigation</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 13: Contact -->
+                <section class="section" id="contact">
+                    <div class="section-header">
+                        <div class="section-number">13</div>
+                        <h2>Contact Information</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="contact-section">
+                            <h3>Questions about these Terms?</h3>
+                            <p>We're here to help clarify any concerns you may have.</p>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>support@vidya.co</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-globe"></i>
+                                    <span>www.vidya.co</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Key Risk Disclosures -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-number">⚠️</div>
+                        <h2>Key Risk Disclosures</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="important-notice">
+                            <h4>Important Disclosures</h4>
+                            <ul>
+                                <li><strong>Page Analysis:</strong> We analyze web content you visit to provide context-aware responses</li>
+                                <li><strong>Action Execution:</strong> The Extension may automatically interact with pages when instructed</li>
+                                <li><strong>Voice Processing:</strong> Voice recordings are processed in real-time but not stored</li>
+                                <li><strong>Student Data:</strong> We comply with FERPA - no sensitive student data is collected</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">Vidya AI</div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms & Conditions</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <p>&copy; 2025 Vidya AI. All rights reserved. Empowering education through artificial intelligence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top -->
+    <a href="#" class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+ <script>
+    // Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Scroll to top functionality
+const scrollToTopBtn = document.getElementById('scrollToTop');
+
+window.addEventListener('scroll', function() {
+    if (window.pageYOffset > 300) {
+        scrollToTopBtn.classList.add('visible');
+    } else {
+        scrollToTopBtn.classList.remove('visible');
+    }
+});
+
+scrollToTopBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+// Additional enhancements
+
+// Lazy loading for sections (optional, improves performance)
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.section');
+    
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver(function(entries, observer) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(section);
+    });
+});
+
+// Add visible class for animation when section is in view
+const style = document.createElement('style');
+style.innerHTML = `
+    .section.visible {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+`;
+document.head.appendChild(style);
+
+// Mobile menu toggle (if needed for responsive navigation)
+const navLinks = document.querySelector('.nav-links');
+const toggleButton = document.createElement('button');
+toggleButton.innerHTML = '<i class="fas fa-bars"></i>';
+toggleButton.classList.add('mobile-toggle');
+toggleButton.style.display = 'none';
+
+document.querySelector('.nav').appendChild(toggleButton);
+
+toggleButton.addEventListener('click', function() {
+    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Show/hide mobile toggle button based on screen size
+window.addEventListener('resize', function() {
+    if (window.innerWidth <= 768) {
+        toggleButton.style.display = 'block';
+        navLinks.style.display = 'none';
+    } else {
+        toggleButton.style.display = 'none';
+        navLinks.style.display = 'flex';
+    }
+});
+
+// Initialize mobile menu state on page load
+if (window.innerWidth <= 768) {
+    toggleButton.style.display = 'block';
+    navLinks.style.display = 'none';
+}
+
+// Prevent multiple rapid clicks on scroll-to-top
+let isScrolling = false;
+scrollToTopBtn.addEventListener('click', function(e) {
+    if (isScrolling) return;
+    isScrolling = true;
+    e.preventDefault();
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+    setTimeout(() => {
+        isScrolling = false;
+    }, 1000);
+});
+
+// Keyboard accessibility for scroll-to-top
+scrollToTopBtn.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+});
+ </script>
