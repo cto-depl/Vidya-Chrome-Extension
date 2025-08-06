@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya AI - Your Smart Learning Companion</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+            position: relative;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .hero-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .hero-header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero-mockup {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .browser-mockup {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-height: 500px;
+        }
+
+        .browser-header {
+            background: #f1f3f4;
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+
+        .browser-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f57; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #28ca42; }
+
+        .browser-content {
+            display: flex;
+            min-height: 450px;
+        }
+
+        .extension-sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem 1.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .extension-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sidebar-header i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .features-list {
+            list-style: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .features-list li {
+            padding: 0.8rem 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .features-list li:hover {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        .features-list li i {
+            margin-right: 0.8rem;
+            width: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slides-container {
+            position: relative;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        .slide-content {
+            max-width: 400px;
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slide h3 .emoji {
+            font-size: 2rem;
+        }
+
+        .slide .use-case {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .slide .with-vidya {
+            background: rgba(118, 75, 162, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #764ba2;
+        }
+
+        .slide .impact {
+            background: rgba(40, 202, 66, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid #28ca42;
+            font-weight: 600;
+        }
+
+        .slide-indicators {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-content > * {
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        .slide-content > *:nth-child(2) { animation-delay: 0.1s; }
+        .slide-content > *:nth-child(3) { animation-delay: 0.2s; }
+        .slide-content > *:nth-child(4) { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+            .hero-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .browser-content {
+                flex-direction: column;
+            }
+            
+            .extension-sidebar {
+                width: 100%;
+                padding: 1.5rem;
+            }
+            
+            .slide {
+                padding: 1.5rem;
+            }
+            
+            .slide h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-container">
+        <div class="hero-header">
+            <h1><i class="fas fa-brain"></i> Vidya AI</h1>
+            <p>Your intelligent learning companion that transforms any content into an interactive educational experience</p>
+        </div>
+        
+        <div class="hero-mockup">
+            <div class="browser-mockup">
+                <div class="browser-header">
+                    <div class="browser-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                </div>
+                <div class="browser-content">
+              
+                    
+                    <div class="main-content">
+                        <div class="slide-counter">
+                            <span id="currentSlide">1</span> / <span id="totalSlides">7</span>
+                        </div>
+                        
+                        <div class="slides-container">
+                            <!-- Slide 1: Student Reading -->
+                            <div class="slide active">
+                                <div class="slide-content">
+                                    <h3><span class="emoji">📚</span> Student Reading Complex Content</h3>
+                                    <div class="use-case">
+                                        <strong>📖 Scenario:</strong> Student encounters "Mitochondria are the powerhouse of the cell" in a science article
+                                    </div>
+                                    <div class="with-vidya">
+                                        <strong>💡 With Vidya:</strong> Select text → Auto-explain → Generate quiz → Create flashcards instantly
+                                    </div>
+                                    <div class="impact">
+                                        <strong>🎯 Impact:</strong> Complex concepts become instantly understandable and testable
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 2: Teacher Lesson Plan -->
+                            <div class="slide">
+                                <div class="slide-content">
+                                    <h3><span class="emoji">👩‍🏫</span> Teacher Lesson Planning</h3>
+                                    <div class="use-case">
+                                        <strong>📋 Scenario:</strong> High school teacher preparing World War II lesson plan
+                                    </div>
+                                    <div class="with-vidya">
+                                        <strong>💡 With Vidya:</strong> Input topic → Generate structured plan with objectives, activities & assessments
+                                    </div>
+                                    <div class="impact">
+                                        <strong>🎯 Impact:</strong> Hours of prep work reduced to minutes with curriculum alignment
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 3: Professional Writing -->
+                            <div class="slide">
+                                <div class="slide-content">
+                                    <h3><span class="emoji">💼</span> Professional Communication</h3>
+                                    <div class="use-case">
+                                        <strong>✉️ Scenario:</strong> Manager writing polite follow-up email to client
+                                    </div>
+                                    <div class="with-vidya">
+                                        <strong>💡 With Vidya:</strong> Smart Writing Assistant creates tone-appropriate, grammatically perfect drafts
+                                    </div>
+                                    <div class="impact">
+                                        <strong>🎯 Impact:</strong> Save time, reduce anxiety, ensure professionalism
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 4: Language Learning -->
+                            <div class="slide">
+                                <div class="slide-content">
+                                    <h3><span class="emoji">🌍</span> Language Learning Support</h3>
+                                    <div class="use-case">
+                                        <strong>🇫🇷 Scenario:</strong> French student reading English startup blog
+                                    </div>
+                                    <div class="with-vidya">
+                                        <strong>💡 With Vidya:</strong> Translate + explain idioms + pronunciation + vocabulary building
+                                    </div>
+                                    <div class="impact">
+                                        <strong>🎯 Impact:</strong> Enhanced language learning in real context
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 5: Exam Planning -->
+                            <div class="slide">
+                                <div class="slide-content">
+                                    <h3><span class="emoji">⏱️</span> Smart Study Planning</h3>
+                                    <div class="use-case">
+                                        <strong>📅 Scenario:</strong> Engineering student with 5 exams in 4 weeks
+                                    </div>
+                                    <div class="with-vidya">
+                                        <strong>💡 With Vidya:</strong> Create personalized schedule with daily goals & spaced revision
+                                    </div>
+                                    <div class="impact">
+                                        <strong>🎯 Impact:</strong> Reduced overwhelm with structured, adaptive planning
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 6: Voice Assistant -->
+                            <div class="slide">
+                                <div class="slide-content">
+                                    <h3><span class="emoji">🎤</span> Inclusive Voice Support</h3>
+                                    <div class="use-case">
+                                        <strong>♿ Scenario:</strong> Visually impaired student or multitasking professional
+                                    </div>
+                                    <div class="with-vidya">
+                                        <strong>💡 With Vidya:</strong> Voice input questions → Spoken answers → Real-time conversation
+                                    </div>
+                                    <div class="impact">
+                                        <strong>🎯 Impact:</strong> Hands-free, inclusive, human-like learning support
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Slide 7: Quick Assessment -->
+                            <div class="slide">
+                                <div class="slide-content">
+                                    <h3><span class="emoji">📋</span> Instant Assessment Creation</h3>
+                                    <div class="use-case">
+                                        <strong>⏰ Scenario:</strong> Teacher needs quiz for tomorrow's class
+                                    </div>
+                                    <div class="with-vidya">
+                                        <strong>💡 With Vidya:</strong> Paste notes → Generate quiz with explanations → Export as PDF/CSV
+                                    </div>
+                                    <div class="impact">
+                                        <strong>🎯 Impact:</strong> 5-minute assessment creation with high accuracy
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slide-indicators">
+                            <div class="indicator active" data-slide="0"></div>
+                            <div class="indicator" data-slide="1"></div>
+                            <div class="indicator" data-slide="2"></div>
+                            <div class="indicator" data-slide="3"></div>
+                            <div class="indicator" data-slide="4"></div>
+                            <div class="indicator" data-slide="5"></div>
+                            <div class="indicator" data-slide="6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class VidyaSlideshow {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.indicators = document.querySelectorAll('.indicator');
+                this.currentSlide = 0;
+                this.totalSlides = this.slides.length;
+                this.isAutoPlaying = true;
+                this.slideInterval = null;
+                
+                this.init();
+            }
+            
+            init() {
+                // Update total slides counter
+                document.getElementById('totalSlides').textContent = this.totalSlides;
+                
+                // Add click handlers to indicators
+                this.indicators.forEach((indicator, index) => {
+                    indicator.addEventListener('click', () => {
+                        this.goToSlide(index);
+                        this.pauseAutoPlay();
+                        setTimeout(() => this.startAutoPlay(), 5000); // Resume after 5 seconds
+                    });
+                });
+                
+                // Start autoplay
+                this.startAutoPlay();
+                
+                // Pause on hover
+                const heroMockup = document.querySelector('.hero-mockup');
+                heroMockup.addEventListener('mouseenter', () => this.pauseAutoPlay());
+                heroMockup.addEventListener('mouseleave', () => this.startAutoPlay());
+            }
+            
+            goToSlide(index) {
+                // Remove active classes
+                this.slides[this.currentSlide].classList.remove('active');
+                this.slides[this.currentSlide].classList.add('prev');
+                this.indicators[this.currentSlide].classList.remove('active');
+                
+                // Set new slide
+                this.currentSlide = index;
+                
+                // Add active classes
+                this.slides[this.currentSlide].classList.add('active');
+                this.slides[this.currentSlide].classList.remove('prev');
+                this.indicators[this.currentSlide].classList.add('active');
+                
+                // Update counter
+                document.getElementById('currentSlide').textContent = this.currentSlide + 1;
+                
+                // Clean up prev classes after transition
+                setTimeout(() => {
+                    this.slides.forEach(slide => slide.classList.remove('prev'));
+                }, 800);
+            }
+            
+            nextSlide() {
+                const nextIndex = (this.currentSlide + 1) % this.totalSlides;
+                this.goToSlide(nextIndex);
+            }
+            
+            startAutoPlay() {
+                if (this.slideInterval) return;
+                this.slideInterval = setInterval(() => {
+                    this.nextSlide();
+                }, 4000); // Change slide every 4 seconds
+            }
+            
+            pauseAutoPlay() {
+                if (this.slideInterval) {
+                    clearInterval(this.slideInterval);
+                    this.slideInterval = null;
+                }
+            }
+        }
+        
+        // Initialize slideshow when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new VidyaSlideshow();
+        });
+        
+        // Add smooth scroll behavior and entrance animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate hero header on load
+            const heroHeader = document.querySelector('.hero-header');
+            heroHeader.style.opacity = '0';
+            heroHeader.style.transform = 'translateY(-30px)';
+            
+            setTimeout(() => {
+                heroHeader.style.transition = 'all 1s ease';
+                heroHeader.style.opacity = '1';
+                heroHeader.style.transform = 'translateY(0)';
+            }, 200);
+            
+            // Animate hero mockup on load
+            const heroMockup = document.querySelector('.hero-mockup');
+            heroMockup.style.opacity = '0';
+            heroMockup.style.transform = 'translateY(50px) scale(0.95)';
+            
+            setTimeout(() => {
+                heroMockup.style.transition = 'all 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
+                heroMockup.style.opacity = '1';
+                heroMockup.style.transform = 'translateY(0) scale(1)';
+            }, 600);
+        });
+    </script>
+</body>
+</html>

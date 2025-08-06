@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya - Your AI Learning Companion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="./icons/Vidya4b.png" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-blue: #4285f4;
+            --accent-purple: #6c5ce7;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --border-light: #e2e8f0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Google Sans', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-purple);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 80px;
+            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 150%;
+            background: var(--primary-gradient);
+            opacity: 0.05;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text h3 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-mockup {
+            position: relative;
+            padding: 2rem;
+        }
+
+        .browser-mockup {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+            transition: transform 0.3s ease;
+        }
+
+        .browser-mockup:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+        }
+
+        .browser-header {
+            background: #f1f3f4;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .browser-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca3f; }
+
+        .browser-content {
+            padding: 2rem;
+            height: 300px;
+            background: linear-gradient(45deg, #f8f9ff 0%, #fff 100%);
+            position: relative;
+        }
+
+        .extension-sidebar {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            width: 200px;
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--accent-purple);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: var(--bg-white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* How It Works - Timeline */
+        .how-it-works {
+            padding: 80px 0;
+            background: var(--bg-light);
+            position: relative;
+        }
+
+        .timeline-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 3rem auto 0;
+            padding: 0 20px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary-gradient));
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 4rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: auto;
+            margin-left: 0;
+            padding-right: 3rem;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: auto;
+            margin-right: 0;
+            padding-left: 3rem;
+            text-align: left;
+        }
+
+        .timeline-content {
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            width: 45%;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-purple);
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border: 15px solid transparent;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -30px;
+            border-left-color: var(--bg-white);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -30px;
+            border-right-color: var(--bg-white);
+        }
+
+        .timeline-step-number {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-step-number:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .timeline-icon {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: var(--secondary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-icon {
+            right: auto;
+            left: -10px;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .timeline-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-highlight {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        /* Technical Highlights */
+        .tech-highlights {
+            padding: 80px 0;
+            background: var(--bg-white);
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .highlight-item {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .highlight-item:hover {
+            background: var(--bg-white);
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .highlight-item .emoji {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial {
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .testimonial::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--accent-purple);
+            opacity: 0.3;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 80px 0;
+            background: var(--bg-white);
+        }
+
+        .faq-accordion {
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 1.5rem 0;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--accent-purple);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .faq-answer.active {
+            max-height: 200px;
+            padding-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 3rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: var(--accent-purple);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #4a5568;
+            color: #a0aec0;
+        }
+
+
+
+        /* Features Alternating Layout CSS */
+.features-alternating {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 3rem;
+}
+
+.feature-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    
+    padding: 2rem 0;
+    grid-template-areas: "image content"; /* Default layout */
+    align-items: flex-start;
+}
+.feature-row.reverse {
+    grid-template-areas: "content image"; /* Reversed layout */
+}
+
+
+.feature-row.reverse > * {
+    direction: ltr;
+}
+.feature-image {
+    position: relative;
+    overflow: hidden;
+    display: flex; /* Added to center images */
+    justify-content: center; /* Center images horizontally */
+}
+
+
+.feature-img {
+    max-width: 100%; /* Ensure image doesn't overflow container */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+    border: 2px solid var(--border-light);
+}
+
+.feature-img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+.feature-content {
+    grid-area: content;
+    padding: 1rem;
+    padding-top: 0;
+    padding-bottom: 2rem;
+}
+
+.feature-content .feature-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+
+.feature-content .feature-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.feature-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.feature-content p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 1.1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .feature-row {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+    }
+    
+    .feature-row.reverse {
+        direction: ltr;
+    }
+    
+    .feature-img {
+        height: 250px;
+    }
+    
+    .features-alternating {
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .feature-img {
+        height: 200px;
+    }
+    
+    .feature-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .feature-content p {
+        font-size: 1rem;
+    }
+}
+
+        /* Mobile Timeline */
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 30px;
+            }
+
+            .timeline-item {
+                margin-bottom: 3rem;
+            }
+
+            .timeline-content {
+                width: calc(100% - 80px);
+                margin-left: 80px !important;
+                margin-right: 0 !important;
+                text-align: left !important;
+                padding-left: 1.5rem !important;
+                padding-right: 1.5rem !important;
+            }
+
+            .timeline-content::before {
+                left: -15px !important;
+                right: auto !important;
+                border-right-color: var(--bg-white) !important;
+                border-left-color: transparent !important;
+            }
+
+            .timeline-step-number {
+                left: 30px;
+                width: 60px;
+                height: 60px;
+                font-size: 1.2rem;
+            }
+
+            .timeline-icon {
+                display: none;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .highlights-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .highlights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+         
+        /* Animation CSS */
+        .feature-row {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        
+        .feature-row.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* For non-reverse rows: image slides from left, content from right */
+        .feature-row:not(.reverse) .feature-image {
+            transform: translateX(-100px);
+            opacity: 0;
+            transition: transform 1s ease, opacity 1s ease;
+        }
+        
+        .feature-row:not(.reverse) .feature-content {
+            transform: translateX(100px);
+            opacity: 0;
+            transition: transform 1s ease, opacity 1s ease;
+        }
+        
+        /* For reverse rows: image slides from right, content from left */
+        .feature-row.reverse .feature-image {
+            transform: translateX(100px);
+            opacity: 0;
+            transition: transform 1s ease, opacity 1s ease;
+        }
+        
+        .feature-row.reverse .feature-content {
+            transform: translateX(-100px);
+            opacity: 0;
+            transition: transform 1s ease, opacity 1s ease;
+        }
+        
+        .feature-row.animate-in .feature-image,
+        .feature-row.animate-in .feature-content {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        /* Delay animations for a staggered effect */
+        .feature-row.animate-in .feature-image {
+            transition-delay: 0.3s;
+        }
+        
+        .feature-row.animate-in .feature-content {
+            transition-delay: 0.5s;
+        }
+        /* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: var(--bg-white);
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 700px;
+    width: 80%;
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {opacity: 0; transform: translateY(-50px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.modal-header h2 {
+    font-size: 1.8rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.close {
+    color: var(--text-light);
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: var(--accent-purple);
+}
+
+.modal-body {
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.modal-body h3 {
+    color: var(--text-primary);
+    margin: 1.5rem 0 0.5rem;
+    font-size: 1.3rem;
+}
+
+.modal-body ul, .modal-body ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+.modal-body li {
+    margin-bottom: 0.8rem;
+    position: relative;
+}
+
+.modal-body li::before {
+    content: "•";
+    color: var(--accent-purple);
+    font-weight: bold;
+    position: absolute;
+    left: -1.2rem;
+}
+
+.modal-highlight {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1.5rem 0;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.modal-emoji {
+    font-size: 2rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+.feature-row:not(.reverse) .feature-image,
+.feature-row.reverse .feature-image {
+    transform: none; /* Remove translation for animation */
+    opacity: 1; /* Make visible by default */
+}
+
+.feature-row.animate-in .feature-image {
+    transform: none; /* Remove translation animation */
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .feature-row {
+        gap: 1.5rem; /* Reduce gap on mobile */
+    }
+    
+    .feature-content {
+        padding: 1rem 0;
+    }
+}
+.slideshow-container {
+            position: relative;
+            width: 70%;
+            height:500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-light);
+        }
+        
+        .slideshow {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        /* Add this to your CSS */
+.slide {
+    transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    will-change: transform, opacity;
+}
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #f8f9ff;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+            border-radius: 10px;
+            transform: scale(0.98);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 2;
+        }
+        
+        /* Morph effect animation */
+        @keyframes morph {
+            0% { opacity: 0; transform: scale(0.95); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.05); }
+        }
+        
+        .slide.transitioning {
+            animation: morph 10s ease-in-out infinite;
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .slideshow-container {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .slideshow-container {
+                height: 200px;
+            }
+        }
+
+
+        .hero-mockup {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+           
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .browser-mockup {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-height: 500px;
+        }
+
+        .browser-header {
+            background: #f1f3f4;
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+
+        .browser-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f57; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #28ca42; }
+
+        .browser-content {
+            display: flex;
+            min-height: 450px;
+        }
+
+        .extension-sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem 1.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .extension-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sidebar-header i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .features-list {
+            list-style: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .features-list li {
+            padding: 0.8rem 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .features-list li:hover {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        .features-list li i {
+            margin-right: 0.8rem;
+            width: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slides-container {
+            position: relative;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        .slide-content {
+            max-width: 400px;
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slide h3 .emoji {
+            font-size: 2rem;
+        }
+
+        .slide .use-case {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .slide .with-vidya {
+            background: rgba(118, 75, 162, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #764ba2;
+        }
+
+        .slide .impact {
+            background: rgba(40, 202, 66, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid #28ca42;
+            font-weight: 600;
+        }
+
+        .slide-indicators {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-content > * {
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        .slide-content > *:nth-child(2) { animation-delay: 0.1s; }
+        .slide-content > *:nth-child(3) { animation-delay: 0.2s; }
+        .slide-content > *:nth-child(4) { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+            .hero-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .browser-content {
+                flex-direction: column;
+            }
+            
+            .extension-sidebar {
+                width: 100%;
+                padding: 1.5rem;
+            }
+            
+            .slide {
+                padding: 1.5rem;
+            }
+            
+            .slide h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Add to your CSS */
+/* Navbar height control */
+.nav {
+    min-height: 60px; /* Fixed minimum height */
+    padding: 0.5rem 0; /* Reduced vertical padding */
+    align-items: center; /* Ensure vertical centering */
+}
+
+/* Logo image styling */
+.logo-img {
+    height: 60px; /* Optimal size for navbar */
+    width: auto; /* Maintain aspect ratio */
+    margin-right: 10px;
+    vertical-align: middle; /* Align properly with text */
+}
+
+/* Ensure logo container doesn't stretch */
+.logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+/* Add to your existing CSS */
+.slide {
+    transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    will-change: transform, opacity;
+}
+
+.feature-row:not(.reverse) .feature-image,
+.feature-row:not(.reverse) .feature-content,
+.feature-row.reverse .feature-image,
+.feature-row.reverse .feature-content {
+    transition: transform 1s ease, opacity 1s ease !important;
+}
+
+/* Update slide counter selectors */
+.slide-counter .current-slide,
+.slide-counter .total-slides {
+    display: inline-block;
+}
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            
+            <div class="logo"><img src="./icons/Vidya4.png" class="logo-img"><img src="./icons/Vidya5.png" class="logo-img"></div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <!-- <li><a href="#testimonials">Testimonials</a></li> -->
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h3>Vidya- AI for Education</h3>
+                  <span style="font-size:21px;">  <strong >Learn with Heart & Mind-It Speaks,Sees & Writes with you</strong></span>
+                    <p>Transform any webpage into an interactive learning experience with our powerful AI-driven Chrome Extension. Learn smarter, not harder.</p>
+                    <a href="#" class="cta-button">
+                        <i class="fab fa-chrome"></i>
+                        Add to Chrome
+                    </a>
+                </div>
+                <div class="hero-mockup">
+                    <div class="browser-mockup">
+                        <div class="browser-header">
+                            <div class="browser-dots">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                        </div>
+                        <div class="browser-content">
+                      
+                            
+                            <div class="main-content">
+                                <div class="slide-counter">
+                                    <span class="current-slide">1</span> / <span class="total-slides">7</span>
+                                </div>
+                                
+                                <div class="slides-container">
+                                    <!-- Slide 1: Student Reading -->
+                                    <div class="slide active">
+                                        <div class="slide-content">
+                                            <h3><span class="emoji">📚</span> Student Reading Complex Content</h3>
+                                            <div class="use-case">
+                                                <strong>📖 Scenario:</strong> Student encounters "Mitochondria are the powerhouse of the cell" in a science article
+                                            </div>
+                                            <div class="with-vidya">
+                                                <strong>💡 With Vidya:</strong> Select text → Auto-explain → Generate quiz → Create flashcards instantly
+                                            </div>
+                                            <div class="impact">
+                                                <strong>🎯 Impact:</strong> Complex concepts become instantly understandable and testable
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 2: Teacher Lesson Plan -->
+                                    <div class="slide">
+                                        <div class="slide-content">
+                                            <h3><span class="emoji">👩‍🏫</span> Teacher Lesson Planning</h3>
+                                            <div class="use-case">
+                                                <strong>📋 Scenario:</strong> High school teacher preparing World War II lesson plan
+                                            </div>
+                                            <div class="with-vidya">
+                                                <strong>💡 With Vidya:</strong> Input topic → Generate structured plan with objectives, activities & assessments
+                                            </div>
+                                            <div class="impact">
+                                                <strong>🎯 Impact:</strong> Hours of prep work reduced to minutes with curriculum alignment
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 3: Professional Writing -->
+                                    <div class="slide">
+                                        <div class="slide-content">
+                                            <h3><span class="emoji">💼</span> Professional Communication</h3>
+                                            <div class="use-case">
+                                                <strong>✉️ Scenario:</strong> Manager writing polite follow-up email to client
+                                            </div>
+                                            <div class="with-vidya">
+                                                <strong>💡 With Vidya:</strong> Smart Writing Assistant creates tone-appropriate, grammatically perfect drafts
+                                            </div>
+                                            <div class="impact">
+                                                <strong>🎯 Impact:</strong> Save time, reduce anxiety, ensure professionalism
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 4: Language Learning -->
+                                    <div class="slide">
+                                        <div class="slide-content">
+                                            <h3><span class="emoji">🌍</span> Language Learning Support</h3>
+                                            <div class="use-case">
+                                                <strong>🇫🇷 Scenario:</strong> French student reading English startup blog
+                                            </div>
+                                            <div class="with-vidya">
+                                                <strong>💡 With Vidya:</strong> Translate + explain idioms + pronunciation + vocabulary building
+                                            </div>
+                                            <div class="impact">
+                                                <strong>🎯 Impact:</strong> Enhanced language learning in real context
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 5: Exam Planning -->
+                                    <div class="slide">
+                                        <div class="slide-content">
+                                            <h3><span class="emoji">⏱️</span> Smart Study Planning</h3>
+                                            <div class="use-case">
+                                                <strong>📅 Scenario:</strong> Engineering student with 5 exams in 4 weeks
+                                            </div>
+                                            <div class="with-vidya">
+                                                <strong>💡 With Vidya:</strong> Create personalized schedule with daily goals & spaced revision
+                                            </div>
+                                            <div class="impact">
+                                                <strong>🎯 Impact:</strong> Reduced overwhelm with structured, adaptive planning
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 6: Voice Assistant -->
+                                    <div class="slide">
+                                        <div class="slide-content">
+                                            <h3><span class="emoji">🎤</span> Inclusive Voice Support</h3>
+                                            <div class="use-case">
+                                                <strong>♿ Scenario:</strong> Visually impaired student or multitasking professional
+                                            </div>
+                                            <div class="with-vidya">
+                                                <strong>💡 With Vidya:</strong> Voice input questions → Spoken answers → Real-time conversation
+                                            </div>
+                                            <div class="impact">
+                                                <strong>🎯 Impact:</strong> Hands-free, inclusive, human-like learning support
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 7: Quick Assessment -->
+                                    <div class="slide">
+                                        <div class="slide-content">
+                                            <h3><span class="emoji">📋</span> Instant Assessment Creation</h3>
+                                            <div class="use-case">
+                                                <strong>⏰ Scenario:</strong> Teacher needs quiz for tomorrow's class
+                                            </div>
+                                            <div class="with-vidya">
+                                                <strong>💡 With Vidya:</strong> Paste notes → Generate quiz with explanations → Export as PDF/CSV
+                                            </div>
+                                            <div class="impact">
+                                                <strong>🎯 Impact:</strong> 5-minute assessment creation with high accuracy
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slide-indicators">
+                                    <div class="indicator active" data-slide="0"></div>
+                                    <div class="indicator" data-slide="1"></div>
+                                    <div class="indicator" data-slide="2"></div>
+                                    <div class="indicator" data-slide="3"></div>
+                                    <div class="indicator" data-slide="4"></div>
+                                    <div class="indicator" data-slide="5"></div>
+                                    <div class="indicator" data-slide="6"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <!-- Features Section with Alternating Layout -->
+<section class="features" id="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>Powerful Learning Features</h2>
+            <p>Discover how Vidya AI transforms your browsing experience into an interactive learning journey</p>
+        </div>
+        
+        <!-- Features with alternating layout -->
+        <div class="features-alternating">
+            
+            <!-- Feature 1: Image Left, Text Right -->
+            <div class="feature-row">
+                <div class="feature-image">
+                    <img src="./icons/Webpage_select-text.png" alt="Contextual Support Assistant - AI-powered text explanations" class="feature-img">
+                </div>
+                <div class="feature-content">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Contextual Support Assistant</h3>
+                    <p>Get instant explanations for any webpage content. Simply select text and receive AI-powered clarifications tailored to your learning level.By simply selecting any text on a webpage, users receive instant, AI-powered explanations tailored to their comprehension level. This feature is particularly valuable for students researching complex topics, professionals deciphering technical documents, or non-native speakers encountering unfamiliar terminology. </p>
+                </div>
+            </div>
+
+            <!-- Feature 2: Text Left, Image Right -->
+            <div class="feature-row reverse">
+                <div class="feature-content">
+                    <div class="feature-icon">
+                        <i class="fas fa-pen"></i>
+                    </div>
+                    <h3>Smart Writing Tools</h3>
+                    <p>Generate essays, emails, and letters with AI assistance. Our intelligent writing companion helps you craft professional content effortlessly.It  empower users to create polished, professional content with ease. Whether drafting an essay, composing a business email, or writing a formal letter, the AI analyzes the context and generates well-structured drafts. Students can input a thesis statement and receive a complete essay outline with relevant arguments. Professionals can describe the purpose of an email ("request a meeting with a client") and get a courteous, formatted draft. The tool also offers style suggestions—like making language more concise or formal—and provides grammar corrections. For non-native English speakers, it helps craft natural-sounding phrases, significantly reducing the time and stress associated with writing in a second language.</p>
+                </div>
+                <div class="feature-image">
+                    <img src="./icons/Writing_ass.png" alt="Smart Writing Tools - AI essay and content generation" class="feature-img">
+                </div>
+            </div>
+
+            <!-- Feature 3: Image Left, Text Right -->
+            <div class="feature-row">
+                <div class="feature-image">
+                    <img src="./icons/lesson-plan.png" alt="Lesson Plan Generator - Create structured educational content" class="feature-img">
+                </div>
+                <div class="feature-content">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <h3>Lesson Plan Generator</h3>
+                    <p>Create structured lesson plans in seconds with our teacher-focused feature. Transform any topic into comprehensive educational content.Designed for educators, the Lesson Plan Generator transforms curriculum requirements into engaging, structured lesson plans in seconds. Teachers can input a topic (e.g., "photosynthesis for 8th grade"), and the AI generates objectives, activities, assessments, and time allocations. It aligns with educational standards and suggests multimedia resources like videos or interactive quizzes. For instance, a history teacher preparing a unit on the Civil War might receive a plan dividing the topic into subtopics (causes, key battles, outcomes), with group discussion prompts and primary source analysis activities. This feature saves hours of planning time while ensuring pedagogical rigor, allowing teachers to focus on classroom engagement.</p>
+                </div>
+            </div>
+
+            <!-- Feature 4: Text Left, Image Right -->
+            <div class="feature-row reverse">
+                <div class="feature-content">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Study Plan Creator</h3>
+                    <p>Build personalized study schedules tailored to your learning goals. Our AI analyzes your progress and optimizes your study routine.This feature helps learners optimize their study routines by creating personalized schedules based on goals, deadlines, and subject difficulty. A student preparing for finals can input their exam dates, subjects, and current proficiency levels, and the AI allocates study time efficiently—prioritizing weaker areas and spacing revisions for better retention. For example, an engineering student might get a 4-week plan balancing calculus problem-solving sessions with shorter, daily vocabulary reviews for a technical communication course. The tool adapts dynamically; if a user struggles with a topic during a session, it automatically adjusts future time allocations and suggests additional practice resources.</p>
+                </div>
+                <div class="feature-image">
+                    <img src="./icons/study-plan.png" alt="Study Plan Creator - Personalized learning schedules" class="feature-img">
+                </div>
+            </div>
+
+          <!-- Feature 5: Quiz Generator with Automatic Slideshow -->
+    <div class="feature-row">
+        <div class="feature-image">
+            <div class="feature-image">
+                <img src="./icons/quiz-gen.png" alt="Lesson Plan Generator - Create structured educational content" class="feature-img">
+            </div>
+            <div class="slideshow-container" style="display:none!important;">
+                <div class="slideshow">
+                    <div class="slide active" id="slide1"></div>
+                    <div class="slide" id="slide2"></div>
+                    <div class="slide" id="slide3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="feature-content">
+            <div class="feature-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+                    <h3>Quiz Generator</h3>
+                    <p>Turn any content into interactive quizzes instantly. Test your knowledge and reinforce learning with automatically generated questions.It turns any text or topic into interactive assessments, reinforcing learning through active recall. Users can upload lecture notes or paste an article, and the AI creates multiple-choice, true/false, and short-answer questions. A biology student revising cell biology might receive questions like, "Which organelle is responsible for protein synthesis?" with distractors targeting common misconceptions. Teachers can generate quizzes for pre-tests or homework, complete with explanations for each answer. The tool also supports gamification—creating flashcards or jeopardy-style questions—to make review sessions more engaging for learners of all ages.</p>
+                </div>
+            </div>
+
+            <!-- Feature 6: Text Left, Image Right -->
+            <div class="feature-row reverse">
+                <div class="feature-content">
+                    <div class="feature-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3>Text Translator</h3>
+                    <p>Real-time translation with automatic language detection.  Language learners can toggle between translated and original text to compare structures, while researchers can quickly digest non-native publications. For instance, a French student reading an English blog might see translations with footnotes explaining puns or slang. The tool also pronounces translated text aloud, aiding pronunciation practice, and creates vocabulary lists from translated content for later review.
+
+                    </p>
+                </div>
+                <div class="feature-image">
+                    <img src="./icons/text-trans.png" alt="Text Translator - Multi-language content support" class="feature-img">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Transform your learning experience in just four simple steps</p>
+            </div>
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-step-number">1</div>
+                    <div class="timeline-content">
+                        <div class="timeline-icon">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </div>
+                        <h3>Select Your Text</h3>
+                        <p>Highlight any text on any webpage that sparks your curiosity or requires deeper understanding. Works seamlessly across all websites and content types.</p>
+                        <span class="timeline-highlight">✨ Universal Selection</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-step-number">2</div>
+                    <div class="timeline-content">
+                        <div class="timeline-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Activate Vidya AI</h3>
+                        <p>Click the intelligent Vidya AI icon that elegantly appears next to your selected text. Our context-aware system instantly recognizes your learning intent.</p>
+                        <span class="timeline-highlight">🎯 Smart Detection</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-step-number">3</div>
+                    <div class="timeline-content">
+                        <div class="timeline-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h3>Choose Your Learning Tool</h3>
+                        <p>Access our comprehensive suite of AI-powered learning tools: explanations, quizzes, summaries, translations, lesson plans, and smart writing assistance.</p>
+                        <span class="timeline-highlight">🧠 AI-Powered Suite</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-step-number">4</div>
+                    <div class="timeline-content">
+                        <div class="timeline-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>Learn & Grow</h3>
+                        <p>Receive instant, personalized AI-generated content tailored to your learning level and goals. Watch your understanding deepen with every interaction.</p>
+                        <span class="timeline-highlight">📈 Personalized Learning</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Highlights -->
+    <section class="tech-highlights">
+        <div class="container">
+            <div class="section-header">
+                <h2>Technical Excellence</h2>
+                <p>Built with cutting-edge technology for seamless learning experiences</p>
+            </div>
+            <div class="highlights-grid">
+                <div class="highlight-item" onclick="openModal('context-ai')">
+                    <span class="emoji">🧠</span>
+                    <h4>Context-Aware AI</h4>
+                </div>
+                <div class="highlight-item" onclick="openModal('voice-input')">
+                    <span class="emoji">🎙️</span>
+                    <h4>Voice Input Support</h4>
+                </div>
+                <div class="highlight-item" onclick="openModal('profiles')">
+                    <span class="emoji">👥</span>
+                    <h4>Student/Teacher Profiles</h4>
+                </div>
+              
+                <div class="highlight-item" onclick="openModal('security')">
+                    <span class="emoji">🔒</span>
+                    <h4>Secure Login System</h4>
+                </div>
+                <div class="highlight-item" onclick="openModal('websites')">
+                    <span class="emoji">🌐</span>
+                    <h4>Works on All Websites</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   
+   <!-- Modal -->
+<div id="techModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Technical Feature</h2>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+    </div>
+</div>
+  <!-- Testimonials -->
+  <section class="testimonials" id="testimonials" style="display:none;">
+    <div class="container">
+        <div class="section-header">
+            <h2>What Educators Say</h2>
+            <p>Join thousands of teachers and students who love Vidya AI</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial">
+                <p class="testimonial-text">Vidya cut my lesson prep time by 70%. The AI-generated lesson plans are comprehensive and perfectly aligned with curriculum standards.</p>
+                <div class="testimonial-author">Sarah, High School Teacher</div>
+            </div>
+            <div class="testimonial">
+                <p class="testimonial-text">My students engage more with the quiz features. It's transformed passive reading into active learning experiences.</p>
+                <div class="testimonial-author">David, University Professor</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+    <div class="container">
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Everything you need to know about Vidya AI</p>
+        </div>
+        <div class="faq-accordion">
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    Is internet required?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    Yes, Vidya AI requires an internet connection for AI processing and real-time analysis of webpage content.
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    How do I access premium features?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    Register at vidya.co for full access to all premium features including advanced lesson planning and detailed analytics.
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFAQ(this)">
+                    Is my data secure?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    Absolutely. All processing happens locally until sent to our encrypted servers. We follow strict privacy protocols and never store personal browsing data.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div>
+                <div class="logo" style="color: white; margin-bottom: 1rem;">Vidya AI</div>
+                <p style="color: #a0aec0;">Your AI Learning Companion for smarter web browsing and enhanced education.</p>
+            </div>
+            <div>
+                <div class="footer-links">
+                    <a href="./privacy.html">Privacy Policy</a>
+                    <a href="./terms.html">Terms</a>
+                    <a href="./contact.html">Contact</a>
+                </div>
+                <div class="social-icons" style="margin-top: 1rem;">
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Vidya AI. All rights reserved. Empowering education through artificial intelligence.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function toggleFAQ(button) {
+        const answer = button.nextElementSibling;
+        const icon = button.querySelector('i');
+        
+        // Close all other FAQ items
+        document.querySelectorAll('.faq-answer').forEach(item => {
+            if (item !== answer) {
+                item.classList.remove('active');
+                item.previousElementSibling.querySelector('i').style.transform = 'rotate(0deg)';
+            }
+        });
+        
+        // Toggle current item
+        answer.classList.toggle('active');
+        icon.style.transform = answer.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        icon.style.transition = 'transform 0.3s ease';
+    }
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Add scroll effect to navbar
+    window.addEventListener('scroll', function() {
+        const header = document.querySelector('.header');
+        if (window.scrollY > 100) {
+            header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        } else {
+            header.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+        }
+    });
+    function animateOnScroll() {
+            const featureRows = document.querySelectorAll('.feature-row');
+            
+            featureRows.forEach(row => {
+                const rowTop = row.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (rowTop < windowHeight * 0.8) {
+                    row.classList.add('animate-in');
+                }
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial check for elements in viewport
+            animateOnScroll();
+            
+            // Add scroll listener
+            window.addEventListener('scroll', animateOnScroll);
+        });
+
+
+
+        // Modal content data
+const modalContents = {
+    'context-ai': {
+        title: '🧠 Context-Aware AI',
+        content: `
+            <h3>How It Works:</h3>
+            <ul>
+                <li>Automatically analyzes webpage structure (headings, buttons, forms)</li>
+                <li>Understands selected text in educational context</li>
+                <li>Remembers conversation history for personalized responses</li>
+                <li>Adapts responses based on user role (teacher/student)</li>
+            </ul>
+            
+            <div class="modal-highlight">
+                <h3>Example Use:</h3>
+                <ul>
+                    <li>Select a complex paragraph on Wikipedia</li>
+                    <li>Right-click → "Explain with Vidya"</li>
+                    <li>Gets age-appropriate explanation based on your profile</li>
+                </ul>
+            </div>
+        `
+    },
+    'voice-input': {
+        title: '🎙️ Voice Input Support',
+        content: `
+            <h3>Features:</h3>
+            <ul>
+                <li>Click microphone icon to dictate questions</li>
+                <li>Real-time transcription with punctuation</li>
+               <li>It responds to your voice query in real-time by speaking the reply, especially when you've selected some text—making it feel like a natural conversation.
+</li>
+                <li>Supports 15+ languages for input</li>
+            </ul>
+            
+          
+        `
+    },
+    'profiles': {
+        title: '👥 Student/Teacher Profiles',
+        content: `
+            <h3>Profile Benefits:</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                <div>
+                    <h4><span class="modal-emoji">👨‍🏫</span> Teachers get:</h4>
+                    <ul>
+                        <li>Lesson plan templates</li>
+                        <li>Class difficulty adjustment</li>
+                        <li>Analysis for Google Classroom</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4><span class="modal-emoji">👩‍🎓</span> Students get:</h4>
+                    <ul>
+                        <li>Simplified explanations</li>
+                        <li>Study plan generator</li>
+                        <li>Vocabulary builder</li>
+                    </ul>
+                </div>
+            </div>
+            
+           
+        `
+    },
+    'export': {
+        title: '📚 Multi-Format Export',
+        content: `
+            <h3>Export Options:</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0;">
+                <div>
+                    <h4><span class="modal-emoji">📝</span> Text</h4>
+                    <p>Copy formatted markdown</p>
+                </div>
+                <div>
+                    <h4><span class="modal-emoji">📄</span> PDF</h4>
+                    <p>With headers/footers</p>
+                </div>
+                <div>
+                    <h4><span class="modal-emoji">📑</span> Google Docs</h4>
+                    <p>Directly to Drive</p>
+                </div>
+                <div>
+                    <h4><span class="modal-emoji">❓</span> Quiz</h4>
+                    <p>CSV for LMS import</p>
+                </div>
+            </div>
+            
+            <div class="modal-highlight">
+                <h3>How To Access:</h3>
+                <ol>
+                    <li>Click "Export" after any generated content</li>
+                    <li>Choose format from dropdown</li>
+                    <li>One-click sharing options</li>
+                </ol>
+            </div>
+        `
+    },
+    'security': {
+        title: '🔒 Secure Login System',
+        content: `
+            <h3>Security Features:</h3>
+            <ul>
+                <li>Email whitelisting via Google Sheets</li>
+                <li>Password encrypted with AES-256</li>
+                <li>Automatic logout after 30min inactivity</li>
+                <li>No tracking of browsing history</li>
+            </ul>
+            
+            <div class="modal-highlight">
+                <h3>Data Privacy:</h3>
+                <ul>
+                    <li>Processes content only when activated</li>
+                    <li>Never stores full webpage copies</li>
+                    <li>GDPR compliant data handling</li>
+                </ul>
+            </div>
+        `
+    },
+    'websites': {
+        title: '🌐 Works on All Websites',
+        content: `
+            <h3>Supported Sites:</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0;">
+                <div>
+                    <h4><span class="modal-emoji">🎓</span> Learning</h4>
+                    <p>Wikipedia, Khan Academy, Coursera</p>
+                </div>
+                <div>
+                    <h4><span class="modal-emoji">💼</span> Productivity</h4>
+                    <p>Google Docs, Notion, Evernote</p>
+                </div>
+                <div>
+                    <h4><span class="modal-emoji">📰</span> News</h4>
+                    <p>NYTimes, BBC, Reuters</p>
+                </div>
+                <div>
+                    <h4><span class="modal-emoji">📄</span> PDFs</h4>
+                    <p>(via browser viewer)</p>
+                </div>
+            </div>
+            
+            <div class="modal-highlight">
+                <h3>Limitations:</h3>
+                <ul>
+                    <li><span style="color: #e53e3e;">✖️</span> Doesn't work on Chrome extensions pages</li>
+                    <li><span style="color: #e53e3e;">✖️</span> Restricted on banking sites</li>
+                    <li><span style="color: #38a169;">✔️</span> Bypasses paywalls for educational content</li>
+                </ul>
+            </div>
+        `
+    }
+};
+
+// Modal functions
+function openModal(modalId) {
+    const modal = document.getElementById('techModal');
+    const content = modalContents[modalId];
+    
+    if (content) {
+        document.getElementById('modalTitle').textContent = content.title;
+        document.getElementById('modalBody').innerHTML = content.content;
+        modal.style.display = 'block';
+    }
+}
+
+function closeModal() {
+    document.getElementById('techModal').style.display = 'none';
+}
+
+// Close modal when clicking outside content
+window.onclick = function(event) {
+    const modal = document.getElementById('techModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            let currentSlide = 0;
+            
+            // Set background images (replace with your actual image paths)
+            document.getElementById('slide2').style.backgroundImage = "url('./icons/quiz-gen1.png')";
+            document.getElementById('slide3').style.backgroundImage = "url('./icons/quiz-gen2.png')";
+            document.getElementById('slide1').style.backgroundImage = "url('./icons/quiz-gen.png')";
+            
+            // Function to cycle through slides
+            function cycleSlides() {
+                // Remove active class from current slide
+                slides[currentSlide].classList.remove('active');
+                
+                // Add transitioning class for morph effect
+                slides[currentSlide].classList.add('transitioning');
+                
+                // Move to next slide
+                currentSlide = (currentSlide + 1) % slides.length;
+                
+                // Add active class to new slide
+                slides[currentSlide].classList.add('active');
+                
+                // Remove transitioning class after animation completes
+                setTimeout(() => {
+                    slides.forEach(slide => slide.classList.remove('transitioning'));
+                }, 10000);
+            }
+            
+            // Start slideshow and cycle every 10 seconds
+            setInterval(cycleSlides, 10000);
+            
+            // Initialize first slide
+            slides[0].classList.add('active');
+        });
+
+
+class VidyaSlideshow {
+    constructor(containerSelector) {
+        this.container = document.querySelector(containerSelector);
+        if (!this.container) return;
+        
+        this.slides = this.container.querySelectorAll('.slide');
+        this.indicators = this.container.querySelectorAll('.indicator');
+        this.currentSlide = 0;
+        this.totalSlides = this.slides.length;
+        this.isAutoPlaying = true;
+        this.slideInterval = null;
+        
+        this.init();
+    }
+    
+    init() {
+        // Initialize counter if exists
+        const counter = this.container.querySelector('.slide-counter');
+        if (counter) {
+            this.container.querySelector('.total-slides').textContent = this.totalSlides;
+        }
+        
+        // Add click handlers to indicators
+        this.indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                this.goToSlide(index);
+                this.pauseAutoPlay();
+                setTimeout(() => this.startAutoPlay(), 5000);
+            });
+        });
+        
+        // Start autoplay
+        this.startAutoPlay();
+        
+        // Pause on hover
+        this.container.addEventListener('mouseenter', () => this.pauseAutoPlay());
+        this.container.addEventListener('mouseleave', () => this.startAutoPlay());
+    }
+    
+    goToSlide(index) {
+        // Remove active classes
+        this.slides.forEach(slide => slide.classList.remove('active'));
+        this.indicators.forEach(ind => ind.classList.remove('active'));
+        
+        // Add active class to new slide
+        this.currentSlide = index;
+        this.slides[this.currentSlide].classList.add('active');
+        this.indicators[this.currentSlide].classList.add('active');
+        
+        // Update counter if exists
+        const counter = this.container.querySelector('.slide-counter');
+        if (counter) {
+            this.container.querySelector('.current-slide').textContent = this.currentSlide + 1;
+        }
+    }
+
+    nextSlide() {
+        const nextIndex = (this.currentSlide + 1) % this.totalSlides;
+        this.goToSlide(nextIndex);
+    }
+    
+    startAutoPlay() {
+        if (this.slideInterval) return;
+        this.slideInterval = setInterval(() => {
+            this.nextSlide();
+        }, 4000);
+    }
+    
+    pauseAutoPlay() {
+        if (this.slideInterval) {
+            clearInterval(this.slideInterval);
+            this.slideInterval = null;
+        }
+    }
+}
+
+// Initialize slideshows when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Hero slideshow
+    if (document.querySelector('.hero .slides-container')) {
+        new VidyaSlideshow('.hero .slides-container');
+    }
+    
+    // Feature slideshow
+    if (document.querySelector('.feature-row .slideshow-container')) {
+        new VidyaSlideshow('.feature-row .slideshow-container');
+    }
+});
+
+// Add smooth animations for feature rows
+function animateOnScroll() {
+    const featureRows = document.querySelectorAll('.feature-row');
+    
+    featureRows.forEach(row => {
+        const rowTop = row.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (rowTop < windowHeight * 0.8) {
+            row.classList.add('animate-in');
+        }
+    });
+}
+
+// Initialize animations
+document.addEventListener('DOMContentLoaded', function() {
+    animateOnScroll();
+    window.addEventListener('scroll', animateOnScroll);
+});
+
+</script>
+</body>
+</html>

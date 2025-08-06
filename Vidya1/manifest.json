@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Vidya- AI for Education",
+  "version": "1.0",
+  "description": "Learn with Heart & Mind-It Speaks, Sees & Writes with you",
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "storage",
+    "tts"
+  ],
+  
+  "host_permissions": [
+    "https://ai.learneng.app/*",
+    "<all_urls>"
+  ],
+  "icons": {
+    "16": "icons/Vidya4b.png",
+    "48": "icons/Vidya4b.png",
+    "128": "icons/Vidya4b.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icons/Vidya4b.png",
+        "48": "icons/Vidya4b.png",
+        "128": "icons/Vidya4b.png"
+      }
+    },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/Vidya1.png",
+        "icons/send.png",
+        "icons/mic.png",
+        "icons/*",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

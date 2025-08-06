@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya - Voice Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            width: 300px;
+            height: 400px;
+            background: white;
+            color: #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .logo img {
+            width: 60px;
+            height: 60px;
+            filter: brightness(0) invert(1);
+        }
+        
+        /* Default state - gentle breathing */
+        .logo.idle {
+            animation: breathe 3s ease-in-out infinite;
+        }
+        
+        /* Listening state - zoom in/out */
+        .logo.listening {
+            animation: zoomPulse 1.5s ease-in-out infinite;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+        
+        /* Speaking state - green glow */
+        .logo.speaking {
+            background: linear-gradient(45deg, #4cd964, #5de86a);
+            box-shadow: 0 10px 30px rgba(76, 217, 100, 0.4);
+            animation: speakingGlow 2s ease-in-out infinite;
+        }
+        
+        /* Processing state - gradient loading */
+        .logo.processing {
+            background: linear-gradient(45deg, #667eea, #764ba2, #ff6b6b, #4cd964);
+            background-size: 400% 400%;
+            animation: gradientShift 2s ease infinite;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .title h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .title p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .instructions {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            max-width: 300px;
+            line-height: 1.4;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { 
+                transform: scale(1);
+            }
+            50% { 
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes zoomPulse {
+            0%, 100% { 
+                transform: scale(1);
+            }
+            50% { 
+                transform: scale(1.15);
+            }
+        }
+        
+        @keyframes speakingGlow {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(76, 217, 100, 0.4);
+            }
+            50% { 
+                transform: scale(1.08);
+                box-shadow: 0 15px 40px rgba(76, 217, 100, 0.6);
+            }
+        }
+        
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Ripple effect on click */
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .logo.ripple::before {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>Vidya</h1>
+        <p>Voice Assistant</p>
+    </div>
+    
+    <div class="logo-container">
+        <div class="logo idle" id="logo">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z'/%3E%3Cpath d='M19 10v2a7 7 0 0 1-14 0v-2'/%3E%3Cline x1='12' y1='19' x2='12' y2='23'/%3E%3Cline x1='8' y1='23' x2='16' y2='23'/%3E%3C/svg%3E" alt="Microphone">
+        </div>
+    </div>
+    
+    <div class="instructions">
+        Click the logo to start speaking. I'll listen and respond with voice.
+    </div>
+    
+    <script src="popup.js">
+
+    </script>
+</body>
+</html>
