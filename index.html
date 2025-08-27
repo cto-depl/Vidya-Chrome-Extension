@@ -2255,12 +2255,52 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.hero .slides-container')) {
         new VidyaSlideshow('.hero .slides-container');
     }
-    console.log(`
+    console.clear();
+
+// 1. Boot sequence logs with gradients
+const bootLogs = [
+  { msg: "[ Booting Vidya AI v2.0.0 ]", colors: ["#ff6ec4", "#7873f5"] },
+  { msg: "> Loading Education Modules... ✅", colors: ["#00c6ff", "#0072ff"] },
+  { msg: "> Optimizing Neural Pathways... ⚡", colors: ["#f7971e", "#ffd200"] },
+  { msg: "> Establishing Developer Link... 🔗", colors: ["#43e97b", "#38f9d7"] },
+  { msg: "------------------------------------------", colors: ["#888", "#bbb"] },
+];
+
+// helper to generate gradient CSS
+function gradientStyle(c1, c2) {
+  return `
+    background: linear-gradient(90deg, ${c1}, ${c2});
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+  `;
+}
+
+bootLogs.forEach(log => {
+  console.log("%c" + log.msg, gradientStyle(log.colors[0], log.colors[1]));
+});
+
+// 2. Your neat block banner
+console.log(`
 ╔═══════════════════════════════╗
 ║       🚀 Welcome to           ║
-║   Vidya- AI for Education     ║
+║   Vidya - AI for Education    ║
 ╚═══════════════════════════════╝
 `);
+
+// 3. Random witty developer greeting
+const devGreetings = [
+  "🤖 Vidya AI online — Debugging knowledge since forever.",
+  "📚 Ready to compile your brain into smarter code.",
+  "⚡ Developer detected. Initiating study co-pilot mode...",
+  "🚀 Pro tip: console.log fixes life too, not just code.",
+  "🎓 Learning never stops — and neither does Vidya AI.",
+];
+console.log(
+  "%c" + devGreetings[Math.floor(Math.random() * devGreetings.length)],
+  "background: linear-gradient(90deg, #ff00cc, #3333ff); color: #fff; padding: 4px 8px; border-radius: 6px; font-weight:bold; font-size:14px;"
+);
 
     // Feature slideshow
     if (document.querySelector('.feature-row .slideshow-container')) {
