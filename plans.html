@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya AI - Choose Your Plan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-blue: #4285f4;
+            --accent-purple: #6c5ce7;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --border-light: #e2e8f0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            --border-radius: 12px;
+            --success-green: #28a745;
+            --warning-orange: #ffa500;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Google Sans', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            min-height: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo-img {
+            height: 60px;
+            width: auto;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-purple);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 120px 0 80px;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 150%;
+            background: var(--primary-gradient);
+            opacity: 0.05;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Pricing Cards */
+        .pricing-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pricing-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--border-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-purple);
+        }
+
+        .pricing-card:hover::before {
+            transform: translateX(0);
+        }
+
+        /* Featured Plan Styling */
+        .pricing-card.featured {
+            transform: scale(1.05);
+            border-color: var(--accent-purple);
+            box-shadow: 0 12px 40px rgba(108, 92, 231, 0.2);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+        }
+
+        .pricing-card.featured::before {
+            transform: translateX(0);
+            background: var(--secondary-gradient);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Card Header */
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .plan-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            background: var(--primary-gradient);
+            box-shadow: var(--shadow-md);
+        }
+
+        .featured .plan-icon {
+            background: var(--secondary-gradient);
+            transform: scale(1.1);
+        }
+
+        .plan-title {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-price {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .featured .plan-price {
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        /* Features List */
+        .features-list {
+            list-style: none;
+            margin-bottom: 2.5rem;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .features-list li:hover {
+            color: var(--text-primary);
+            transform: translateX(5px);
+        }
+
+        .feature-icon {
+            color: var(--success-green);
+            margin-right: 0.75rem;
+            margin-top: 0.2rem;
+            font-size: 1.2rem;
+            min-width: 20px;
+        }
+
+        .limited-feature {
+            opacity: 0.6;
+        }
+
+        .limited-feature .feature-icon {
+            color: var(--warning-orange);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Google Sans', sans-serif;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .featured .cta-button {
+            background: var(--secondary-gradient);
+            font-size: 1.2rem;
+            padding: 1.4rem 2rem;
+        }
+
+        .free-button {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            color: #cbd5e0;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .pricing-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 0 1rem;
+            }
+
+            .pricing-card {
+                padding: 2rem;
+                margin: 0;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+                margin-bottom: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .main-content {
+                padding: 100px 0 60px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .page-header p {
+                font-size: 1.1rem;
+            }
+
+            .pricing-card {
+                padding: 1.5rem;
+            }
+
+            .plan-title {
+                font-size: 1.6rem;
+            }
+
+            .features-list li {
+                font-size: 1rem;
+            }
+        }
+
+        /* Animation for cards */
+        .pricing-card {
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideUp 0.8s ease forwards;
+        }
+
+        .pricing-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Additional styling for better visual hierarchy */
+        .highlight-text {
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        .comparison-note {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .comparison-note p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0;
+        }
+
+                /* Header */
+                .header {
+            background: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-link:hover {
+            color: var(--accent-purple);
+        }
+
+
+
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .terms-container {
+                padding: 2rem 1.5rem;
+                margin-top: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .section-content {
+                padding-left: 0;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .terms-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .page-header {
+                margin-bottom: 2rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+        /* Navbar height control */
+.nav {
+    min-height: 60px; /* Fixed minimum height */
+    padding: 0.5rem 0; /* Reduced vertical padding */
+    align-items: center; /* Ensure vertical centering */
+}
+
+/* Logo image styling */
+.logo-img {
+    height: 60px; /* Optimal size for navbar */
+    width: auto; /* Maintain aspect ratio */
+    margin-right: 10px;
+    vertical-align: middle; /* Align properly with text */
+}
+
+/* Ensure logo container doesn't stretch */
+.logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+
+        <header class="header">
+            <nav class="nav container">
+                <a href="./index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </a>
+                <div class="logo"><img src="./icons/Vidya4.png" class="logo-img"><img src="./icons/Vidya5.png" class="logo-img"></div>
+                
+            </nav>
+        </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Choose Your Plan</h1>
+                <p>Select the perfect plan for your learning journey. Upgrade or downgrade at any time.</p>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="pricing-container">
+                <!-- Free Plan -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <div class="plan-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h2 class="plan-title">Free Plan</h2>
+                        <p class="plan-price">$0/month • Get Started</p>
+                    </div>
+                    
+                    <ul class="features-list">
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span>Contextual Support Assistant</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span>Real-time Translator</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span>Content Summarizer</span>
+                        </li>
+                        <li class="limited-feature">
+                            <i class="fas fa-exclamation-triangle feature-icon"></i>
+                            <span>Limited Access <span class="highlight-text">(20 queries/day)</span></span>
+                        </li>
+                        <li class="limited-feature">
+                            <i class="fas fa-clock feature-icon"></i>
+                            <span>Basic Support</span>
+                        </li>
+                    </ul>
+                    
+                    <button class="cta-button free-button" onclick="window.location.href='index.html'">
+                        <i class="fas fa-rocket" style="margin-right: 0.5rem;"></i>
+                        Choose Free
+                    </button>
+                    
+                </div>
+
+                <!-- Paid Plan -->
+                <div class="pricing-card featured">
+                    <div class="featured-badge">
+                        <i class="fas fa-star"></i> Most Popular
+                    </div>
+                    
+                    <div class="card-header">
+                        <div class="plan-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h2 class="plan-title">Premium Plan</h2>
+                        <p class="plan-price">$9.99/month • Full Access</p>
+                    </div>
+                    
+                    <ul class="features-list">
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span><strong>Unlimited Access</strong> to all features</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span><strong>24/7 Priority Support</strong></span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span><strong>Voice to Voice Conversation</strong></span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span><strong>Study Plan Generator</strong></span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span><strong>Lesson Plan Generator</strong></span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span><strong>Quiz Generator</strong> with exports</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle feature-icon"></i>
+                            <span><strong>Smart Writing Assistant</strong></span>
+                        </li>
+                
+                    </ul>
+                    
+                    <button class="cta-button">
+                        <i class="fas fa-crown" style="margin-right: 0.5rem;"></i>
+                        Start For Free Trial
+                    </button>
+                </div>
+            </div>
+
+            <!-- Comparison Note -->
+            <div class="comparison-note">
+                <p>
+                    <i class="fas fa-info-circle" style="margin-right: 0.5rem; color: var(--accent-purple);"></i>
+                    Start with our free plan and upgrade anytime. No contracts, cancel whenever you want.
+                    <strong style="color: var(--accent-purple);">7-day free trial</strong> available for Premium plan!
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2012 Vidya AI. All rights reserved. Empowering education through artificial intelligence.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

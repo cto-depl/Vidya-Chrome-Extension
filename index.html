@@ -2218,21 +2218,16 @@ class VidyaSlideshow {
     }
     
     goToSlide(index) {
-        // Remove active classes
-        this.slides.forEach(slide => slide.classList.remove('active'));
-        this.indicators.forEach(ind => ind.classList.remove('active'));
-        
-        // Add active class to new slide
-        this.currentSlide = index;
-        this.slides[this.currentSlide].classList.add('active');
+    this.slides[this.currentSlide].classList.remove('active');
+    this.currentSlide = index;
+    this.slides[this.currentSlide].classList.add('active');
+
+    if (this.indicators.length > 0) { // 👈 only if indicators exist
+        this.container.querySelector('.indicator.active')?.classList.remove('active');
         this.indicators[this.currentSlide].classList.add('active');
-        
-        // Update counter if exists
-        const counter = this.container.querySelector('.slide-counter');
-        if (counter) {
-            this.container.querySelector('.current-slide').textContent = this.currentSlide + 1;
-        }
     }
+}
+
 
     nextSlide() {
         const nextIndex = (this.currentSlide + 1) % this.totalSlides;
